@@ -343,11 +343,11 @@ if highfiletype > 0:
 
 # Generating filtered trajectory
 if args.filterfile != '':
-  print "Writing encoded-decoded trajectory into %s" % highfilename
-  print
   filterfilename = args.filterfile
   if filterfilename[-4:] != '.xtc':
     filterfilename = filterfilename + '.xtc'
+  print "Writing encoded-decoded trajectory into %s" % highfilename
+  print
   decoded_coords2 = np.zeros((trajsize[0], trajsize[1], 3))
   for i in range(trajsize[1]):
     decoded_coords2[:,i,0] = decoded_coords[:,3*i]*maxbox
