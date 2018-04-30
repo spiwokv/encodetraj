@@ -1,8 +1,14 @@
 ## encodetraj
 ### (Deep learning) autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj
 
+Example:
 ```
-Using TensorFlow backend.
+./encodetraj.py -i traj_fit.xtc -p reference.pdb -boxx 1 -boxy 1 -boxz 1 -testset 0.2 \ 
+                -low low.txt -high high.txt -filter filtered -model model -epochs 1000
+```
+
+Usage:
+```
 usage: encodetraj.py [-h] [-i INFILE] [-p INTOP] [-boxx BOXX] [-boxy BOXY]
                      [-boxz BOXZ] [-testset TESTSET] [-shuffle SHUFFLE]
                      [-layers LAYERS] [-layer1 LAYER1] [-layer2 LAYER2]
@@ -62,3 +68,4 @@ optional arguments:
                       no output)
   -plumed PLUMEDFILE  Output file for Plumed (default = no output) TODO
 ```
+
