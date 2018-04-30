@@ -1,0 +1,7 @@
+maxbox = 1.000000
+input_coord = krs.layers.Input(shape=(trajsize[1]*3,))
+encoded = krs.layers.Dense(256, activation='sigmoid', use_bias=True)(input_coord)
+encoded = krs.layers.Dense(3, activation='linear', use_bias=True)(encoded)
+decoded = krs.layers.Dense(256, activation='sigmoid', use_bias=True)(encoded)
+decoded = krs.layers.Dense(trajsize[1]*3, activation='linear', use_bias=True)(decoded)
+autoencoder = krs.models.Model(input_coord, decoded)
