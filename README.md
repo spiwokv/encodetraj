@@ -1,7 +1,7 @@
-# encodetraj
-(Deep learning) autoencoders for molecular trajectory analysis, requires
-numpy, keras and mdtraj
+## encodetraj
+# (Deep learning) autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj
 
+```
 Using TensorFlow backend.
 usage: encodetraj.py [-h] [-i INFILE] [-p INTOP] [-boxx BOXX] [-boxy BOXY]
                      [-boxz BOXZ] [-testset TESTSET] [-shuffle SHUFFLE]
@@ -60,4 +60,5 @@ optional arguments:
                       format (default = no output)
   -model MODELFILE    Prefix for output model files (experimental, default =
                       no output)
-  -plumed PLUMEDFILE  Output file for Plumed (default = no output)
+  -plumed PLUMEDFILE  Output file for Plumed (default = no output) TODO
+```
