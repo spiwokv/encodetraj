@@ -2,11 +2,9 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
                      shuffle=1, layers=2, layer1=256, layer2=256,
                      encdim=3, actfun1='sigmoid', actfun2='sigmoid',
-                     optim='adam', loss='mean_squared_error',
-                     epochs=100, batch_size=0,
-                     lowfilename='', lowfiletype='',
-                     highfilename='', highfiletype='',
-                     filterfilename=''):
+                     optim='adam', loss='mean_squared_error', epochs=100, batch_size=0,
+                     lowfilename='', lowfiletype='', highfilename='', highfiletype='',
+                     filterfilename='', modelfile=''):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -224,36 +222,36 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     krs.utils.plot_model(autoencoder, to_file=plotfilename)
   
   # Saving the model
-  if args.modelfile != '':
-    print "Writing model into %s.txt" % args.modelfile
+  if modelfile != '':
+    print "Writing model into %s.txt" % modelfile
     print
-    ofile = open(args.modelfile+'.txt', "w")
+    ofile = open(modelfile+'.txt', "w")
     ofile.write("maxbox = %f\n" % maxbox)
     ofile.write("input_coord = krs.layers.Input(shape=(trajsize[1]*3,))\n")
-    ofile.write("encoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(input_coord)\n" % (args.layer1, args.actfun1))
-    if args.layers == 3:
-      ofile.write("encoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(encoded)\n" % (args.layer2, args.actfun2))
-    ofile.write("encoded = krs.layers.Dense(%i, activation='linear', use_bias=True)(encoded)\n" % args.encdim)
-    if args.layers == 3:
-      ofile.write("encoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(encoded)\n" % (args.layer2, args.actfun2))
-    ofile.write("decoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(encoded)\n" % (args.layer1, args.actfun1))
+    ofile.write("encoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(input_coord)\n" % (layer1, actfun1))
+    if layers == 3:
+      ofile.write("encoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(encoded)\n" % (layer2, actfun2))
+    ofile.write("encoded = krs.layers.Dense(%i, activation='linear', use_bias=True)(encoded)\n" % encdim)
+    if layers == 3:
+      ofile.write("encoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(encoded)\n" % (layer2, actfun2))
+    ofile.write("decoded = krs.layers.Dense(%i, activation='%s', use_bias=True)(encoded)\n" % (layer1, actfun1))
     ofile.write("decoded = krs.layers.Dense(trajsize[1]*3, activation='linear', use_bias=True)(decoded)\n")
     ofile.write("autoencoder = krs.models.Model(input_coord, decoded)\n")
     ofile.close()
-    print "Writing model weights and biases into %s_*.npy NumPy arrays" % args.modelfile
+    print "Writing model weights and biases into %s_*.npy NumPy arrays" % modelfile
     print
-    if args.layers == 2:
-      np.save(file=args.modelfile+"_1.npy", arr=autoencoder.layers[1].get_weights())
-      np.save(file=args.modelfile+"_2.npy", arr=autoencoder.layers[2].get_weights())
-      np.save(file=args.modelfile+"_3.npy", arr=autoencoder.layers[3].get_weights())
-      np.save(file=args.modelfile+"_4.npy", arr=autoencoder.layers[4].get_weights())
+    if layers == 2:
+      np.save(file=modelfile+"_1.npy", arr=autoencoder.layers[1].get_weights())
+      np.save(file=modelfile+"_2.npy", arr=autoencoder.layers[2].get_weights())
+      np.save(file=modelfile+"_3.npy", arr=autoencoder.layers[3].get_weights())
+      np.save(file=modelfile+"_4.npy", arr=autoencoder.layers[4].get_weights())
     else:
-      np.save(file=args.modelfile+"_1.npy", arr=autoencoder.layers[1].get_weights())
-      np.save(file=args.modelfile+"_2.npy", arr=autoencoder.layers[2].get_weights())
-      np.save(file=args.modelfile+"_3.npy", arr=autoencoder.layers[3].get_weights())
-      np.save(file=args.modelfile+"_4.npy", arr=autoencoder.layers[4].get_weights())
-      np.save(file=args.modelfile+"_5.npy", arr=autoencoder.layers[5].get_weights())
-      np.save(file=args.modelfile+"_6.npy", arr=autoencoder.layers[6].get_weights())
+      np.save(file=modelfile+"_1.npy", arr=autoencoder.layers[1].get_weights())
+      np.save(file=modelfile+"_2.npy", arr=autoencoder.layers[2].get_weights())
+      np.save(file=modelfile+"_3.npy", arr=autoencoder.layers[3].get_weights())
+      np.save(file=modelfile+"_4.npy", arr=autoencoder.layers[4].get_weights())
+      np.save(file=modelfile+"_5.npy", arr=autoencoder.layers[5].get_weights())
+      np.save(file=modelfile+"_6.npy", arr=autoencoder.layers[6].get_weights())
   
   # Saving collective motions trajectories
   #if args.collectivefile != '':
