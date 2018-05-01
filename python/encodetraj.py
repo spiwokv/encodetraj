@@ -1,8 +1,10 @@
+#!/usr/bin/env python
+
 def encodetrajectory(infilename='', intopname='', plotfilename='',
-                     boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
+                     boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.1,
                      shuffle=1, layers=2, layer1=256, layer2=256,
                      encdim=3, actfun1='sigmoid', actfun2='sigmoid',
-                     optim='adam', loss='mean_squared_error', epochs=100, batch_size=0,
+                     optim='adam', loss='mean_squared_error', epochs=100, batch=0,
                      lowfilename='', lowfiletype='', highfilename='', highfiletype='',
                      filterfilename='', modelfile=''):
   # Loading trajectory
@@ -404,6 +406,10 @@ if __name__ == "__main__":
   help='Output file for Plumed (default = no output)')
   
   args = parser.parse_args()
+  
+  infilename = args.infile
+  intopname = args.intop
+  plotfilename = args.plotfile
   boxx = args.boxx
   boxy = args.boxy
   boxz = args.boxz
@@ -411,7 +417,7 @@ if __name__ == "__main__":
   if args.testset < 0.0 or args.testset > 0.5:
     print "ERROR: -testset must be 0.0 - 0.5"
     exit(0)
-  atestset = int(args.testset)
+  atestset = float(args.testset)
   
   # Shuffling the trajectory before splitting
   if args.shuffle == "True":
@@ -442,10 +448,13 @@ if __name__ == "__main__":
   encdim = args.encdim
   actfun1 = args.actfun1 
   actfun2 = args.actfun2
+  epochs = args.epochs
   optim = args.optim
+  batch = args.batch
   loss = args.loss
   lowfiletype = 0
   highfiletype = 0
+  lowfilename = ''
   if args.lowfile != '':
     if args.lowfile[-4:] == '.xvg':
       lowfilename = args.lowfile
@@ -456,6 +465,7 @@ if __name__ == "__main__":
     else:
       lowfilename = args.lowfile + '.txt'
       lowfiletype = 2
+  highfilename = ''
   if args.highfile != '':
     if args.highfile[-4:] == '.xvg':
       highfilename = args.highfile
@@ -466,18 +476,19 @@ if __name__ == "__main__":
     else:
       highfilename = args.highfile + '.txt'
       highfiletype = 2
+  filterfilename = ''
   if args.filterfile != '':
     filterfilename = args.filterfile
     if filterfilename[-4:] != '.xtc':
       filterfilename = filterfilename + '.xtc'
   modelfile = args.modelfile
-  collectivefile = args.collectivefile
-  ncollective = args.ncollective
+  #collectivefile = args.collectivefile
+  #ncollective = args.ncollective
   encodetrajectory(infilename, intopname, plotfilename,
                    boxx, boxy, boxz, atestset,
                    shuffle, layers, layer1, layer2,
                    encdim, actfun1, actfun2,
-                   optim, loss, epochs, batch_size,
+                   optim, loss, epochs, batch,
                    lowfilename, lowfiletype, highfilename, highfiletype,
                    filterfilename, modelfile)
 
