@@ -254,22 +254,21 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       np.save(file=modelfile+"_6.npy", arr=autoencoder.layers[6].get_weights())
   
   # Saving collective motions trajectories
-  #if args.collectivefile != '':
-  #  collectivefile = args.collectivefile
+  #if collectivefile != '':
   #  if collectivefile[-4:] == '.xtc':
   #    collectivefile = collectivefile[:-4]
-  #  traj = traj[:args.ncollective]
+  #  traj = traj[:ncollective]
   #  print "Writing collective motion into %s_1.xtc" % collectivefile
   #  print
-  #  collective = np.zeros((args.ncollective, 3))
+  #  collective = np.zeros((ncollective, 3))
   #  cvmin = np.amin(encoded_coords[:,0])
   #  cvmax = np.amax(encoded_coords[:,0])
-  #  for i in range(args.ncollective):
-  #    collective[i,0] = cvmin+(cvmax-cvmin)*float(i)/float(args.ncollective-1)
+  #  for i in range(ncollective):
+  #    collective[i,0] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
   #    collective[i,1] = np.mean(encoded_coords[:,1])
   #    collective[i,2] = np.mean(encoded_coords[:,2])
   #  collective2 = decoder.predict(collective)
-  #  collective3 = np.zeros((args.ncollective, trajsize[1], 3))
+  #  collective3 = np.zeros((ncollective, trajsize[1], 3))
   #  for i in range(trajsize[1]):
   #    collective3[:,i,0] = collective2[:,3*i]*maxbox
   #    collective3[:,i,1] = collective2[:,3*i+1]*maxbox
@@ -278,15 +277,15 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   #  traj.save_xtc(collectivefile+"_1.xtc")
   #  print "Writing collective motion into %s_2.xtc" % collectivefile
   #  print
-  #  collective = np.zeros((args.ncollective, 3))
+  #  collective = np.zeros((ncollective, 3))
   #  cvmin = np.amin(encoded_coords[:,1])
   #  cvmax = np.amax(encoded_coords[:,1])
-  #  for i in range(args.ncollective):
+  #  for i in range(ncollective):
   #    collective[i,0] = np.mean(encoded_coords[:,0])
-  #    collective[i,1] = cvmin+(cvmax-cvmin)*float(i)/float(args.ncollective-1)
+  #    collective[i,1] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
   #    collective[i,2] = np.mean(encoded_coords[:,2])
   #  collective2 = decoder.predict(collective)
-  #  collective3 = np.zeros((args.ncollective, trajsize[1], 3))
+  #  collective3 = np.zeros((ncollective, trajsize[1], 3))
   #  for i in range(trajsize[1]):
   #    collective3[:,i,0] = collective2[:,3*i]*maxbox
   #    collective3[:,i,1] = collective2[:,3*i+1]*maxbox
@@ -295,15 +294,15 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   #  traj.save_xtc(collectivefile+"_2.xtc")
   #  print "Writing collective motion into %s_3.xtc" % collectivefile
   #  print
-  #  collective = np.zeros((args.ncollective, 3))
+  #  collective = np.zeros((ncollective, 3))
   #  cvmin = np.amin(encoded_coords[:,2])
   #  cvmax = np.amax(encoded_coords[:,2])
   #  for i in range(args.ncollective):
   #    collective[i,0] = np.mean(encoded_coords[:,0])
   #    collective[i,1] = np.mean(encoded_coords[:,1])
-  #    collective[i,2] = cvmin+(cvmax-cvmin)*float(i)/float(args.ncollective-1)
+  #    collective[i,2] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
   #  collective2 = decoder.predict(collective)
-  #  collective3 = np.zeros((args.ncollective, trajsize[1], 3))
+  #  collective3 = np.zeros((ncollective, trajsize[1], 3))
   #  for i in range(trajsize[1]):
   #    collective3[:,i,0] = collective2[:,3*i]*maxbox
   #    collective3[:,i,1] = collective2[:,3*i+1]*maxbox
@@ -472,4 +471,5 @@ if __name__ == "__main__":
     if filterfilename[-4:] != '.xtc':
       filterfilename = filterfilename + '.xtc'
   modelfile = args.modelfile
-
+  collectivefile = args.collectivefile
+  ncollective = args.ncollective
