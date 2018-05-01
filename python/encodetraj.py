@@ -473,3 +473,12 @@ if __name__ == "__main__":
   modelfile = args.modelfile
   collectivefile = args.collectivefile
   ncollective = args.ncollective
+  encodetrajectory(infilename, intopname, plotfilename,
+                   boxx, boxy, boxz, atestset,
+                   shuffle, layers, layer1, layer2,
+                   encdim, actfun1, actfun2,
+                   optim, loss, epochs, batch_size,
+                   lowfilename, lowfiletype, highfilename, highfiletype,
+                   filterfilename, modelfile)
+
+
