@@ -312,6 +312,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   #  traj.xyz = collective3
   #  traj.save_xtc(collectivefile+"_3.xtc")
   #
+  return autoencoder
   
 if __name__ == "__main__":
   # Loading necessary libraries
@@ -400,7 +401,7 @@ if __name__ == "__main__":
   help='Prefix for output model files (experimental, default = no output)')
   
   parser.add_argument('-plot', dest='plotfile', default='',
-  help='Model plot file in png or svg (default = no output)')
+  help='Model plot file in png (default = no output)')
   
   parser.add_argument('-plumed', dest='plumedfile', default='',
   help='Output file for Plumed (default = no output)')
