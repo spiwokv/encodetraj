@@ -1,9 +1,9 @@
-def encodetrajectory(args):
+def encodetrajectory(infilename, intopname, plotfilename, boxx, boxy, boxz):
   # Loading trajectory
   try:
-    traj = md.load(args.infile, top=args.intop)
+    traj = md.load(infilename, top=intopname)
   except:
-    print "Cannot load %s or %s, exiting." % (args.infile, args.intop)
+    print "Cannot load %s or %s, exiting." % (infilename, intopname)
     parser.print_help()
     exit(0)
   else:
@@ -12,11 +12,10 @@ def encodetrajectory(args):
   
   # ploting model scheme
   plotfiletype = 0
-  if args.plotfile != '':
+  if plotfilename != '':
     plotfiletype = 1
-    plotfilename = args.plotfile
-    if args.plotfile[-4:] != '.png':
-      plotfilename = args.plotfile + '.png'
+    if plotfilename[-4:] != '.png':
+      plotfilename = plotfilename + '.png'
   
   # Conversion of the trajectory from Nframes x Natoms x 3 to Nframes x (Natoms x 3)
   trajsize = traj.xyz.shape
@@ -31,10 +30,6 @@ def encodetrajectory(args):
     print "ERROR: Some of atom has negative coordinate (i.e. it is outside the box)"
     exit(0)
 
-  boxx = args.boxx
-  boxy = args.boxy
-  boxz = args.boxz
-  
   if boxx == 0.0 or boxy == 0.0 or boxz == 0.0:
     print "WARNING: box size not set, it will be determined automatically"
     if boxx == 0.0:
@@ -458,5 +453,9 @@ if __name__ == "__main__":
   help='Output file for Plumed (default = no output)')
   
   args = parser.parse_args()
+  boxx = args.boxx
+  boxy = args.boxy
+  boxz = args.boxz
+  
   
   
