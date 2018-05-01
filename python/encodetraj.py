@@ -2,7 +2,11 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
                      shuffle=1, layers=2, layer1=256, layer2=256,
                      encdim=3, actfun1='sigmoid', actfun2='sigmoid',
-                     optim='adam', loss='mean_squared_error'):
+                     optim='adam', loss='mean_squared_error',
+                     epochs=100, batch_size=0,
+                     lowfilename='', lowfiletype='',
+                     highfilename='', highfiletype='',
+                    ):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -101,14 +105,14 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   autoencoder.compile(optimizer=optim, loss=loss)
   
-  if args.batch>0:
+  if batch>0:
     autoencoder.fit(training_set, training_set,
-                    epochs=args.epochs,
-                    batch_size=args.batch,
+                    epochs=epochs,
+                    batch_size=batch,
                     validation_data=(testing_set, testing_set))
   else:
     autoencoder.fit(training_set, training_set,
-                    epochs=args.epochs,
+                    epochs=epochs,
                     validation_data=(testing_set, testing_set))
   
   # Encoding and decoding the trajectory
@@ -131,31 +135,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   vec1 = traj2[indexes[-testsize:],:].reshape((testsize*trajsize[1]*3))
   vec2 = decoded_coords[indexes[-testsize:],:].reshape((testsize*trajsize[1]*3))*maxbox
   print "Pearson correlation coefficient for encoded-decoded testing set is %f" % np.corrcoef(vec1,vec2)[0,1]
-  print
-  
-  # Generating output
-  lowfiletype = 0
-  highfiletype = 0
-  if args.lowfile != '':
-    if args.lowfile[-4:] == '.xvg':
-      lowfilename = args.lowfile
-      lowfiletype = 1
-    elif args.lowfile[-4:] == '.txt':
-      lowfilename = args.lowfile
-      lowfiletype = 2
-    else:
-      lowfilename = args.lowfile + '.txt'
-      lowfiletype = 2
-  if args.highfile != '':
-    if args.highfile[-4:] == '.xvg':
-      highfilename = args.highfile
-      highfiletype = 1
-    elif args.highfile[-4:] == '.txt':
-      highfilename = args.highfile
-      highfiletype = 2
-    else:
-      highfilename = args.highfile + '.txt'
-      highfiletype = 2
+  print  
   
   # Generating low-dimensional output
   if lowfiletype > 0:
@@ -174,7 +154,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       ofile.write("@ xaxis  label \"low-dimensional embedding 1\"\n")
       ofile.write("@ yaxis  label \"low-dimensional embedding 2\"\n")
       for i in range(trajsize[0]):
-        for j in range(args.encdim):
+        for j in range(encdim):
           ofile.write("%f " % encoded_coords[i][j])
         typeofset = 'TE'
         if i in indexes[:-testsize]:
@@ -184,7 +164,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     if lowfiletype == 2:
       ofile = open(lowfilename, "w")
       for i in range(trajsize[0]):
-        for j in range(args.encdim):
+        for j in range(encdim):
           ofile.write("%f " % encoded_coords[i][j])
         typeofset = 'TE'
         if i in indexes[:-testsize]:
@@ -470,6 +450,27 @@ if __name__ == "__main__":
   actfun2 = args.actfun2
   optim = args.optim
   loss = args.loss
-  
+  lowfiletype = 0
+  highfiletype = 0
+  if args.lowfile != '':
+    if args.lowfile[-4:] == '.xvg':
+      lowfilename = args.lowfile
+      lowfiletype = 1
+    elif args.lowfile[-4:] == '.txt':
+      lowfilename = args.lowfile
+      lowfiletype = 2
+    else:
+      lowfilename = args.lowfile + '.txt'
+      lowfiletype = 2
+  if args.highfile != '':
+    if args.highfile[-4:] == '.xvg':
+      highfilename = args.highfile
+      highfiletype = 1
+    elif args.highfile[-4:] == '.txt':
+      highfilename = args.highfile
+      highfiletype = 2
+    else:
+      highfilename = args.highfile + '.txt'
+      highfiletype = 2
   
 
