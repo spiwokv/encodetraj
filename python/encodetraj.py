@@ -1,5 +1,5 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
-                     boxx=0.0, boxy=0.0, boxz=0.0, testsize=0.2,
+                     boxx=0.0, boxy=0.0, boxz=0.0, atestsize=0.2,
                      shuffle=1, ):
   # Loading trajectory
   try:
@@ -54,6 +54,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   maxbox = max([boxx, boxy, boxz])
 
   # Splitting the trajectory into training and testing sets
+  testsize = int(atestset * trajsize[0])
   if testsize < 1:
     print "ERROR: testset empty, increase testsize"
     exit(0)
