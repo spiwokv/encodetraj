@@ -5,8 +5,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      optim='adam', loss='mean_squared_error',
                      epochs=100, batch_size=0,
                      lowfilename='', lowfiletype='',
-                     highfilename='', highfiletype='',
-                    ):
+                     highfilename='', highfiletype=''):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
