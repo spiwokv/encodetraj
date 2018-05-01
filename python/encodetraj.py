@@ -469,9 +469,9 @@ if __name__ == "__main__":
     else:
       highfilename = args.highfile + '.txt'
       highfiletype = 2
-    if args.filterfile != '':
+  if args.filterfile != '':
     filterfilename = args.filterfile
     if filterfilename[-4:] != '.xtc':
       filterfilename = filterfilename + '.xtc'
-
+  modelfile = args.modelfile
 
