@@ -462,8 +462,8 @@ if __name__ == "__main__":
       exit(0)
   layers = args.layers
   layer1 = args.layer1
-  args.layer2 = args.layer2
-  args.encdim = args.encdim
+  layer2 = args.layer2
+  encdim = args.encdim
   actfun1 = args.actfun1 
   actfun2 = args.actfun2
 
