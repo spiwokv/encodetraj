@@ -1,4 +1,5 @@
-def encodetrajectory(infilename, intopname, plotfilename, boxx, boxy, boxz):
+def encodetrajectory(infilename='', intopname='', plotfilename='',
+                     boxx=0.0, boxy=0.0, boxz=0.0, testsize=0.2):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -52,10 +53,6 @@ def encodetrajectory(infilename, intopname, plotfilename, boxx, boxy, boxz):
   maxbox = max([boxx, boxy, boxz])
 
   # Splitting the trajectory into training and testing sets
-  if args.testset < 0.0 or args.testset > 0.5:
-    print "ERROR: -testset must be 0.0 - 0.5"
-    exit(0)
-  testsize = int(args.testset * trajsize[0])
   if testsize < 1:
     print "ERROR: testset empty, increase testsize"
     exit(0)
@@ -456,6 +453,9 @@ if __name__ == "__main__":
   boxx = args.boxx
   boxy = args.boxy
   boxz = args.boxz
-  
+  if args.testset < 0.0 or args.testset > 0.5:
+    print "ERROR: -testset must be 0.0 - 0.5"
+    exit(0)
+  testsize = int(args.testset * trajsize[0])
   
   
