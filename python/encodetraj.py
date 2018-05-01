@@ -1,5 +1,5 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
-                     boxx=0.0, boxy=0.0, boxz=0.0, atestsize=0.2,
+                     boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
                      shuffle=1, ):
   # Loading trajectory
   try:
@@ -454,7 +454,7 @@ if __name__ == "__main__":
   if args.testset < 0.0 or args.testset > 0.5:
     print "ERROR: -testset must be 0.0 - 0.5"
     exit(0)
-  ntestset = int(args.testset)
+  atestset = int(args.testset)
   # Shuffling the trajectory before splitting
   if args.shuffle == "True":
     shuffle = 1
