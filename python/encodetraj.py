@@ -1,6 +1,7 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
-                     shuffle=1, layers=2):
+                     shuffle=1, layers=2, layer1=256, layer2=256,
+                     encdim=3, actfun1='sigmoid', actfun2='sigmoid'):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
