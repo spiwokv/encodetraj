@@ -5,7 +5,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      optim='adam', loss='mean_squared_error',
                      epochs=100, batch_size=0,
                      lowfilename='', lowfiletype='',
-                     highfilename='', highfiletype=''):
+                     highfilename='', highfiletype='',
+                     filterfilename=''):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -207,11 +208,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       ofile.close()
   
   # Generating filtered trajectory
-  if args.filterfile != '':
-    filterfilename = args.filterfile
-    if filterfilename[-4:] != '.xtc':
-      filterfilename = filterfilename + '.xtc'
-    print "Writing encoded-decoded trajectory into %s" % highfilename
+  if filterfilename != '':
+    print "Writing encoded-decoded trajectory into %s" % filterfilename
     print
     decoded_coords2 = np.zeros((trajsize[0], trajsize[1], 3))
     for i in range(trajsize[1]):
@@ -471,5 +469,9 @@ if __name__ == "__main__":
     else:
       highfilename = args.highfile + '.txt'
       highfiletype = 2
-  
+    if args.filterfile != '':
+    filterfilename = args.filterfile
+    if filterfilename[-4:] != '.xtc':
+      filterfilename = filterfilename + '.xtc'
+
 
