@@ -1,7 +1,7 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, testsize=0.2,
                      shuffle=1, ):
-  # Loading trajectory
+  # loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
   except:
