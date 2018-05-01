@@ -85,6 +85,9 @@ help='Output file with encoded-decoded trajectory in .xtc format (default = no o
 parser.add_argument('-model', dest='modelfile', default='',
 help='Prefix for output model files (experimental, default = no output)')
 
+parser.add_argument('-plot', dest='plotfile', default='',
+help='Model plot file in png or svg (default = no output)')
+
 parser.add_argument('-plumed', dest='plumedfile', default='',
 help='Output file for Plumed (default = no output)')
 
