@@ -105,6 +105,14 @@ else:
   print "%s succesfully loaded" % traj
 print
 
+# ploting model scheme
+plotfiletype = 0
+if args.plotfile != '':
+  plotfiletype = 1
+  plotfilename = args.plotfile
+  if args.plotfile[-4:] != '.png':
+    plotfilename = args.plotfile + '.png'
+
 # Conversion of the trajectory from Nframes x Natoms x 3 to Nframes x (Natoms x 3)
 trajsize = traj.xyz.shape
 traj2 = np.zeros((trajsize[0], trajsize[1]*3))
