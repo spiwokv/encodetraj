@@ -1,7 +1,8 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
                      shuffle=1, layers=2, layer1=256, layer2=256,
-                     encdim=3, actfun1='sigmoid', actfun2='sigmoid'):
+                     encdim=3, actfun1='sigmoid', actfun2='sigmoid',
+                     optim='adam', loss='mean_squared_error'):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -75,30 +76,30 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   # (Deep) learning  
   input_coord = krs.layers.Input(shape=(trajsize[1]*3,))
-  encoded = krs.layers.Dense(args.layer1, activation=args.actfun1, use_bias=True)(input_coord)
-  if args.layers == 3:
-    encoded = krs.layers.Dense(args.layer2, activation=args.actfun2, use_bias=True)(encoded)
-  encoded = krs.layers.Dense(args.encdim, activation='linear', use_bias=True)(encoded)
-  if args.layers == 3:
-    encoded = krs.layers.Dense(args.layer2, activation=args.actfun2, use_bias=True)(encoded)
-  decoded = krs.layers.Dense(args.layer1, activation=args.actfun1, use_bias=True)(encoded)
+  encoded = krs.layers.Dense(layer1, activation=actfun1, use_bias=True)(input_coord)
+  if layers == 3:
+    encoded = krs.layers.Dense(layer2, activation=actfun2, use_bias=True)(encoded)
+  encoded = krs.layers.Dense(encdim, activation='linear', use_bias=True)(encoded)
+  if layers == 3:
+    encoded = krs.layers.Dense(layer2, activation=actfun2, use_bias=True)(encoded)
+  decoded = krs.layers.Dense(layer1, activation=actfun1, use_bias=True)(encoded)
   decoded = krs.layers.Dense(trajsize[1]*3, activation='linear', use_bias=True)(decoded)
   autoencoder = krs.models.Model(input_coord, decoded)
   
   encoder = krs.models.Model(input_coord, encoded)
   
-  encoded_input = krs.layers.Input(shape=(args.encdim,))
-  if args.layers == 2:
+  encoded_input = krs.layers.Input(shape=(encdim,))
+  if layers == 2:
     decoder_layer1 = autoencoder.layers[-2]
     decoder_layer2 = autoencoder.layers[-1]
     decoder = krs.models.Model(encoded_input, decoder_layer2(decoder_layer1(encoded_input)))
-  if args.layers == 3:
+  if layers == 3:
     decoder_layer1 = autoencoder.layers[-3]
     decoder_layer2 = autoencoder.layers[-2]
     decoder_layer3 = autoencoder.layers[-1]
     decoder = krs.models.Model(encoded_input, decoder_layer3(decoder_layer2(decoder_layer1(encoded_input))))
   
-  autoencoder.compile(optimizer=args.optim, loss=args.loss)
+  autoencoder.compile(optimizer=optim, loss=loss)
   
   if args.batch>0:
     autoencoder.fit(training_set, training_set,
@@ -467,4 +468,8 @@ if __name__ == "__main__":
   encdim = args.encdim
   actfun1 = args.actfun1 
   actfun2 = args.actfun2
+  optim = args.optim
+  loss = args.loss
+  
+  
 
