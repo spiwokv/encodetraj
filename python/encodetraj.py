@@ -1,6 +1,6 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.2,
-                     shuffle=1, ):
+                     shuffle=1, layers=2):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -460,5 +460,10 @@ if __name__ == "__main__":
     if args.actfun2 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
       print "ERROR: cannot understand -actfun2 %s" % args.actfun1
       exit(0)
+  layers = args.layers
+  layer1 = args.layer1
+  args.layer2 = args.layer2
+  args.encdim = args.encdim
+  actfun1 = args.actfun1 
+  actfun2 = args.actfun2
 
-  
