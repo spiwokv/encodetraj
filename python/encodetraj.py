@@ -1,5 +1,6 @@
 def encodetrajectory(infilename='', intopname='', plotfilename='',
-                     boxx=0.0, boxy=0.0, boxz=0.0, testsize=0.2):
+                     boxx=0.0, boxy=0.0, boxz=0.0, testsize=0.2,
+                     ):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -60,16 +61,11 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   print
   
   # Shuffling the trajectory before splitting
-  if args.shuffle == "True":
-    shuffle = 1
+  if shuffle == 1:
     print "Trajectory will be shuffled before splitting into training and test set"
-  elif args.shuffle == "False":
-    shuffle = 0
+  elif shuffle == 0:
     print "Trajectory will NOT be shuffled before splitting into training and test set"
     print "(first %i frames will be used for trainintg, next %i for testing)" % (trajsize[0]-testsize, testsize)
-  else:
-    print "ERROR: -shuffle %s not understood" % args.shuffle
-    exit(0)
   indexes = range(trajsize[0])
   if shuffle == 1:
     np.random.shuffle(indexes)
@@ -453,9 +449,18 @@ if __name__ == "__main__":
   boxx = args.boxx
   boxy = args.boxy
   boxz = args.boxz
+
   if args.testset < 0.0 or args.testset > 0.5:
     print "ERROR: -testset must be 0.0 - 0.5"
     exit(0)
-  testsize = int(args.testset * trajsize[0])
+  ntestset = int(args.testset)
+  # Shuffling the trajectory before splitting
+  if args.shuffle == "True":
+    shuffle = 1
+  elif args.shuffle == "False":
+    shuffle = 0
+  else:
+    print "ERROR: -shuffle %s not understood" % args.shuffle
+    exit(0)
   
   
