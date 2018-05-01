@@ -1,7 +1,7 @@
-# TO DO Python
+# TO DO Plumed
 
 ```
-'softmax' ????
+#'softmax' ????
 'elu' (exp(x)-1.0)*step(-x)+x*step(x)
 'selu' 1.0507*(1.67326*exp(x)-1.67326)*step(-x)+1.0507*x*step(x)
 'softplus' log(1.0+exp(x))
