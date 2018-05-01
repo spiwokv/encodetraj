@@ -72,26 +72,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     np.random.shuffle(indexes)
   training_set, testing_set = traj2[indexes[:-testsize],:]/maxbox, traj2[indexes[-testsize:],:]/maxbox
   
-  # (Deep) learning
-  if args.layers < 2 or args.layers > 3:
-    print "ERROR: -layers must be 2-3, for deeper learning contact authors"
-    exit(0)
-  
-  if args.layer1 > 1024:
-    print "WARNING: You plan to use %i neurons in the second layer, could be slow"
-  
-  if args.layers == 3:
-    if args.layer2 > 1024:
-      print "WARNING: You plan to use %i neurons in the third layer, could be slow"
-  
-  if args.actfun1 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
-    print "ERROR: cannot understand -actfun1 %s" % args.actfun1
-    exit(0)
-  if args.layers == 3:
-    if args.actfun2 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
-      print "ERROR: cannot understand -actfun2 %s" % args.actfun1
-      exit(0)
-  
+  # (Deep) learning  
   input_coord = krs.layers.Input(shape=(trajsize[1]*3,))
   encoded = krs.layers.Dense(args.layer1, activation=args.actfun1, use_bias=True)(input_coord)
   if args.layers == 3:
@@ -455,6 +436,7 @@ if __name__ == "__main__":
     print "ERROR: -testset must be 0.0 - 0.5"
     exit(0)
   atestset = int(args.testset)
+  
   # Shuffling the trajectory before splitting
   if args.shuffle == "True":
     shuffle = 1
@@ -463,5 +445,20 @@ if __name__ == "__main__":
   else:
     print "ERROR: -shuffle %s not understood" % args.shuffle
     exit(0)
-  
+  if args.layers < 2 or args.layers > 3:
+    print "ERROR: -layers must be 2-3, for deeper learning contact authors"
+    exit(0)
+  if args.layer1 > 1024:
+    print "WARNING: You plan to use %i neurons in the second layer, could be slow"
+  if args.layers == 3:
+    if args.layer2 > 1024:
+      print "WARNING: You plan to use %i neurons in the third layer, could be slow"
+  if args.actfun1 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
+    print "ERROR: cannot understand -actfun1 %s" % args.actfun1
+    exit(0)
+  if args.layers == 3:
+    if args.actfun2 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
+      print "ERROR: cannot understand -actfun2 %s" % args.actfun1
+      exit(0)
+
   
