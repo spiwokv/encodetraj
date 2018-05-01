@@ -1,99 +1,5 @@
 #!/usr/bin/python
 
-# Loading necessary libraries
-libnames = [('mdtraj', 'md'), ('numpy', 'np'), ('keras', 'krs'), ('argparse', 'arg'), ('datetime', 'dt'), ('sys', 'sys')]
-
-for (name, short) in libnames:
-  try:
-    lib = __import__(name)
-  except:
-    print "Library %s is not installed, exiting" % name
-    exit(0)
-  else:
-    globals()[short] = lib
-
-# Parsing command line arguments
-parser = arg.ArgumentParser(description='(Deep learning) autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj')
-
-parser.add_argument('-i', dest='infile', default='traj.xtc',
-help='Input trajectory in pdb, xtc, trr, dcd, netcdf or mdcrd, WARNING: the trajectory must be 1. centered in the PBC box, 2. fitted to a reference structure and 3. must contain only atoms to be analysed!')
-
-parser.add_argument('-p', dest='intop', default='top.pdb',
-help='Input topology in pdb, WARNING: the structure must be 1. centered in the PBC box and 2. must contain only atoms to be analysed!')
-
-parser.add_argument('-boxx', dest='boxx', default=0.0, type=float,
-help='Size of x coordinate of PBC box (from 0 to set value in nm)')
-
-parser.add_argument('-boxy', dest='boxy', default=0.0, type=float,
-help='Size of y coordinate of PBC box (from 0 to set value in nm)')
-
-parser.add_argument('-boxz', dest='boxz', default=0.0, type=float,
-help='Size of z coordinate of PBC box (from 0 to set value in nm)')
-
-parser.add_argument('-testset', dest='testset', default=0.10, type=float,
-help='Size of test set (fraction of the trajectory, default = 0.1)')
-
-parser.add_argument('-shuffle', dest='shuffle', default='True',
-help='Shuffle trajectory frames to obtain training and test set (default True)')
-
-parser.add_argument('-layers', dest='layers', default=2, type=int,
-help='Number of encoding layers (same as number of decoding, allowed values 2-3, default = 2)')
-
-parser.add_argument('-layer1', dest='layer1', default=256, type=int,
-help='Number of neurons in the second encoding layer (default = 256)')
-
-parser.add_argument('-layer2', dest='layer2', default=256, type=int,
-help='Number of neurons in the third encoding layer (default = 256)')
-
-parser.add_argument('-encdim', dest='encdim', default=3, type=int,
-help='Encoding dimension (default = 3)')
-
-parser.add_argument('-actfun1', dest='actfun1', default='sigmoid',
-help='Activation function of the first layer (default = sigmoid, for options see keras documentation)')
-
-parser.add_argument('-actfun2', dest='actfun2', default='sigmoid',
-help='Activation function of the second layer (default = sigmoid, for options see keras documentation)')
-
-parser.add_argument('-optim', dest='optim', default='adam',
-help='Optimizer (default = adam, for options see keras documentation)')
-
-parser.add_argument('-loss', dest='loss', default='mean_squared_error',
-help='Loss function (default = mean_squared_error, for options see keras documentation)')
-
-parser.add_argument('-epochs', dest='epochs', default=100, type=int,
-help='Number of epochs (default = 100, >1000 may be necessary for real life applications)')
-
-parser.add_argument('-batch', dest='batch', default=256, type=int,
-help='Batch size (0 = no batches, default = 256)')
-
-parser.add_argument('-low', dest='lowfile', default='',
-help='Output file with low-dimensional embedings (xvg or txt, default = no output)')
-
-parser.add_argument('-high', dest='highfile', default='',
-help='Output file with original coordinates and encoded-decoded coordinates (xvg or txt, default = no output)')
-
-parser.add_argument('-filter', dest='filterfile', default='',
-help='Output file with encoded-decoded trajectory in .xtc format (default = no output)')
-
-# Extraction of collective motions does not work very well
-#parser.add_argument('-collective', dest='collectivefile', default='',
-#help='Output files with collective motions trajectories in .xtc format (default = no output)')
-#
-#parser.add_argument('-ncollective', dest='ncollective', default=10, type=int,
-#help='Number of frames in collective motions trajectories (default = 20)')
-
-parser.add_argument('-model', dest='modelfile', default='',
-help='Prefix for output model files (experimental, default = no output)')
-
-parser.add_argument('-plot', dest='plotfile', default='',
-help='Model plot file in png or svg (default = no output)')
-
-parser.add_argument('-plumed', dest='plumedfile', default='',
-help='Output file for Plumed (default = no output)')
-
-args = parser.parse_args()
-print
-
 # Loading trajectory
 try:
   traj = md.load(args.infile, top=args.intop)
@@ -461,3 +367,98 @@ if args.modelfile != '':
 #  traj.save_xtc(collectivefile+"_3.xtc")
 #
 
+if __name__ == "__main__":
+  # Loading necessary libraries
+  libnames = [('mdtraj', 'md'), ('numpy', 'np'), ('keras', 'krs'), ('argparse', 'arg'), ('datetime', 'dt'), ('sys', 'sys')]
+  
+  for (name, short) in libnames:
+    try:
+      lib = __import__(name)
+    except:
+      print "Library %s is not installed, exiting" % name
+      exit(0)
+    else:
+      globals()[short] = lib
+  
+  # Parsing command line arguments
+  parser = arg.ArgumentParser(description='(Deep learning) autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj')
+  
+  parser.add_argument('-i', dest='infile', default='traj.xtc',
+  help='Input trajectory in pdb, xtc, trr, dcd, netcdf or mdcrd, WARNING: the trajectory must be 1. centered in the PBC box, 2. fitted to a reference structure and 3. must contain only atoms to be analysed!')
+  
+  parser.add_argument('-p', dest='intop', default='top.pdb',
+  help='Input topology in pdb, WARNING: the structure must be 1. centered in the PBC box and 2. must contain only atoms to be analysed!')
+  
+  parser.add_argument('-boxx', dest='boxx', default=0.0, type=float,
+  help='Size of x coordinate of PBC box (from 0 to set value in nm)')
+  
+  parser.add_argument('-boxy', dest='boxy', default=0.0, type=float,
+  help='Size of y coordinate of PBC box (from 0 to set value in nm)')
+  
+  parser.add_argument('-boxz', dest='boxz', default=0.0, type=float,
+  help='Size of z coordinate of PBC box (from 0 to set value in nm)')
+  
+  parser.add_argument('-testset', dest='testset', default=0.10, type=float,
+  help='Size of test set (fraction of the trajectory, default = 0.1)')
+  
+  parser.add_argument('-shuffle', dest='shuffle', default='True',
+  help='Shuffle trajectory frames to obtain training and test set (default True)')
+  
+  parser.add_argument('-layers', dest='layers', default=2, type=int,
+  help='Number of encoding layers (same as number of decoding, allowed values 2-3, default = 2)')
+  
+  parser.add_argument('-layer1', dest='layer1', default=256, type=int,
+  help='Number of neurons in the second encoding layer (default = 256)')
+  
+  parser.add_argument('-layer2', dest='layer2', default=256, type=int,
+  help='Number of neurons in the third encoding layer (default = 256)')
+  
+  parser.add_argument('-encdim', dest='encdim', default=3, type=int,
+  help='Encoding dimension (default = 3)')
+  
+  parser.add_argument('-actfun1', dest='actfun1', default='sigmoid',
+  help='Activation function of the first layer (default = sigmoid, for options see keras documentation)')
+  
+  parser.add_argument('-actfun2', dest='actfun2', default='sigmoid',
+  help='Activation function of the second layer (default = sigmoid, for options see keras documentation)')
+  
+  parser.add_argument('-optim', dest='optim', default='adam',
+  help='Optimizer (default = adam, for options see keras documentation)')
+  
+  parser.add_argument('-loss', dest='loss', default='mean_squared_error',
+  help='Loss function (default = mean_squared_error, for options see keras documentation)')
+  
+  parser.add_argument('-epochs', dest='epochs', default=100, type=int,
+  help='Number of epochs (default = 100, >1000 may be necessary for real life applications)')
+  
+  parser.add_argument('-batch', dest='batch', default=256, type=int,
+  help='Batch size (0 = no batches, default = 256)')
+  
+  parser.add_argument('-low', dest='lowfile', default='',
+  help='Output file with low-dimensional embedings (xvg or txt, default = no output)')
+  
+  parser.add_argument('-high', dest='highfile', default='',
+  help='Output file with original coordinates and encoded-decoded coordinates (xvg or txt, default = no output)')
+  
+  parser.add_argument('-filter', dest='filterfile', default='',
+  help='Output file with encoded-decoded trajectory in .xtc format (default = no output)')
+  
+  # Extraction of collective motions does not work very well
+  #parser.add_argument('-collective', dest='collectivefile', default='',
+  #help='Output files with collective motions trajectories in .xtc format (default = no output)')
+  #
+  #parser.add_argument('-ncollective', dest='ncollective', default=10, type=int,
+  #help='Number of frames in collective motions trajectories (default = 20)')
+  
+  parser.add_argument('-model', dest='modelfile', default='',
+  help='Prefix for output model files (experimental, default = no output)')
+  
+  parser.add_argument('-plot', dest='plotfile', default='',
+  help='Model plot file in png or svg (default = no output)')
+  
+  parser.add_argument('-plumed', dest='plumedfile', default='',
+  help='Output file for Plumed (default = no output)')
+  
+  args = parser.parse_args()
+  
+  
