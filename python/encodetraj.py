@@ -257,7 +257,6 @@ vec2 = decoded_coords[indexes[-testsize:],:].reshape((testsize*trajsize[1]*3))*m
 print "Pearson correlation coefficient for encoded-decoded testing set is %f" % np.corrcoef(vec1,vec2)[0,1]
 print
 
-
 # Generating output
 lowfiletype = 0
 highfiletype = 0
@@ -366,6 +365,10 @@ if args.filterfile != '':
     decoded_coords2[:,i,2] = decoded_coords[:,3*i+2]*maxbox
   traj.xyz = decoded_coords2
   traj.save_xtc(filterfilename)
+
+# Saving a plot of the model
+if plotfiletype == 1:
+  krs.utils.plot_model(autoencoder, to_file=plotfilename)
 
 # Saving the model
 if args.modelfile != '':
