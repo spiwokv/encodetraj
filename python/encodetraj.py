@@ -221,7 +221,9 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   # Saving a plot of the model
   if plotfiletype == 1:
-    krs.utils.plot_model(autoencoder, to_file=plotfilename)
+    print "Printing model into %s" % plotfilename
+    print
+    krs.utils.plot_model(autoencoder, show_shapes=True, to_file=plotfilename)
   
   # Saving the model
   if modelfile != '':
