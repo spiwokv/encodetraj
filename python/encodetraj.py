@@ -646,8 +646,9 @@ if __name__ == "__main__":
   #collectivefile = args.collectivefile
   #ncollective = args.ncollective
   plumedfile = args.plumedfile
-  if plumedfile[-4:] != '.dat':
-    plumedfile = plumedfile + '.dat'
+  if plumedfile != '':
+    if plumedfile[-4:] != '.dat':
+      plumedfile = plumedfile + '.dat'
   encodetrajectory(infilename, intopname, plotfilename,
                    boxx, boxy, boxz, atestset,
                    shuffle, layers, layer1, layer2,
