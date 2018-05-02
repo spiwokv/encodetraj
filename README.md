@@ -71,6 +71,6 @@ optional arguments:
   -model MODELFILE    Prefix for output model files (experimental, default =
                       no output)
   -plot PLOTFILE      Model plot file in png (default = no output)
-  -plumed PLUMEDFILE  Output file for Plumed (default = no output) TODO
+  -plumed PLUMEDFILE  Output file for Plumed (default = no output)
 ```
 
