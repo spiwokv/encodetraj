@@ -6,7 +6,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      encdim=3, actfun1='sigmoid', actfun2='sigmoid',
                      optim='adam', loss='mean_squared_error', epochs=100, batch=0,
                      lowfilename='', lowfiletype='', highfilename='', highfiletype='',
-                     filterfilename='', modelfile=''):
+                     filterfilename='', modelfile='', plumedfile=''):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -314,6 +314,159 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   #  traj.xyz = collective3
   #  traj.save_xtc(collectivefile+"_3.xtc")
   #
+  
+  if plumedfile != '':
+    print "Writing Plumed input into %s" % plumedfile
+    print
+    traj = md.load(infilename, top=intopname)
+    table, bonds = traj.topology.to_dataframe()
+    atoms = table['serial'][:]
+    ofile = open(plumedfile, "w")
+    ofile.write("WHOLEMOLECULES ENTITY0=1-%i\n" % np.max(atoms))
+    ofile.write("FIT_TO_TEMPLATE STRIDE=1 REFERENCE=%s TYPE=OPTIMAL\n" % intopname)
+    for i in range(trajsize[1]):
+      ofile.write("p%i: POSITION ATOM=%i\n" % (i+1,atoms[i]))
+    for i in range(trajsize[1]):
+      ofile.write("p%ix: COMBINE ARG=p%i.x COEFFICIENTS=%f PERIODIC=NO\n" % (i+1,i+1,1.0/maxbox))
+      ofile.write("p%iy: COMBINE ARG=p%i.y COEFFICIENTS=%f PERIODIC=NO\n" % (i+1,i+1,1.0/maxbox))
+      ofile.write("p%iz: COMBINE ARG=p%i.z COEFFICIENTS=%f PERIODIC=NO\n" % (i+1,i+1,1.0/maxbox))
+    if layers==2:
+      for i in range(layer1):
+        toprint = "l1_%i: COMBINE ARG=" % (i+1)
+        for j in range(trajsize[1]):
+          toprint = toprint + "p%ix,p%iy,p%iz," % (j+1,j+1,j+1)
+        toprint = toprint[:-1] + " COEFFICIENTS="
+        for j in range(3*trajsize[1]):
+          toprint = toprint + "%0.5f," % (autoencoder.layers[1].get_weights()[0][j,i])
+        toprint = toprint[:-1] + " PERIODIC=NO\n"
+        ofile.write(toprint)
+      for i in range(layer1):
+        onebias = autoencoder.layers[1].get_weights()[1][i]
+        if onebias>0.0:
+          if actfun1 == 'elu': printfun = "(exp(x+%0.5f)-1.0)*step(-x-%0.5f)+(x+%0.5f)*step(x+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'selu': printfun = "1.0507*(1.67326*exp(x+%0.5f)-1.67326)*step(-x-%0.5f)+1.0507*(x+%0.5f)*step(x+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'softplus': printfun = "log(1.0+exp(x+%0.5f))" % (onebias)
+          elif actfun1 == 'softsign': printfun = "(x+%0.5f)/(1.0+step(x+%0.5f)*(x+%0.5f))" % (onebias,onebias,onebias)
+          elif actfun1 == 'relu': printfun = "step(x+%0.5f)*(x+%0.5f)" % (onebias,onebias)
+          elif actfun1 == 'tanh': printfun = "(exp(x+%0.5f)-exp(-x-%0.5f))/(exp(x+%0.5f)+exp(-x-%0.5f))" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x-%0.5f))" % (onebias)
+          elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5+%0.5f)*step(x-2.5+%0.5f)*(0.2*(x+%0.5f)+0.5) + step(x-2.5+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'linear': printfun = "(x-%0.5f)" % (onebias)
+        else:
+          if actfun1 == 'elu': printfun = "(exp(x-%0.5f)-1.0)*step(-x+%0.5f)+(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'selu': printfun = "1.0507*(1.67326*exp(x-%0.5f)-1.67326)*step(-x+%0.5f)+1.0507*(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'softplus': printfun = "log(1.0+exp(x-%0.5f))" % (-onebias)
+          elif actfun1 == 'softsign': printfun = "(x-%0.5f)/(1.0+step(x-%0.5f)*(x-%0.5f))" % (-onebias,-onebias,-onebias)
+          elif actfun1 == 'relu': printfun = "step(x-%0.5f)*(x-%0.5f)" % (-onebias,-onebias)
+          elif actfun1 == 'tanh': printfun = "(exp(x-%0.5f)-exp(-x+%0.5f))/(exp(x-%0.5f)+exp(-x+%0.5f))" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x+%0.5f))" % (-onebias)
+          elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5-%0.5f)*step(x-2.5-%0.5f)*(0.2*(x-%0.5f)+0.5) + step(x-2.5-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'linear': printfun = "(x+%0.5f)" % (-onebias)
+        ofile.write("l1r_%i: MATHEVAL ARG=l1_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
+      for i in range(encdim):
+        toprint = "l2_%i: COMBINE ARG=" % (i+1)
+        for j in range(layer2):
+          toprint = toprint + "l1r_%i," % (j+1)
+        toprint = toprint[:-1] + " COEFFICIENTS="
+        for j in range(layer2):
+          toprint = toprint + "%0.5f," % (autoencoder.layers[2].get_weights()[0][j,i])
+        toprint = toprint[:-1] + " PERIODIC=NO\n"
+        ofile.write(toprint)
+      for i in range(encdim):
+        if autoencoder.layers[2].get_weights()[1][i]>0.0:
+          ofile.write("l2r_%i: MATHEVAL ARG=l2_%i FUNC=x+%0.5f PERIODIC=NO\n" % (i+1,i+1,autoencoder.layers[2].get_weights()[1][i]))
+        else:
+          ofile.write("l2r_%i: MATHEVAL ARG=l2_%i FUNC=x-%0.5f PERIODIC=NO\n" % (i+1,i+1,-autoencoder.layers[2].get_weights()[1][i]))
+      toprint = "PRINT ARG="
+      for i in range(encdim):
+        toprint = toprint + "l2r_%i," % (i+1)
+      toprint = toprint[:-1] + " STRIDE=100 FILE=COLVAR\n"
+      ofile.write(toprint)
+    if layers==3:
+      for i in range(layer1):
+        toprint = "l1_%i: COMBINE ARG=" % (i+1)
+        for j in range(trajsize[1]):
+          toprint = toprint + "p%ix,p%iy,p%iz," % (j+1,j+1,j+1)
+        toprint = toprint[:-1] + " COEFFICIENTS="
+        for j in range(3*trajsize[1]):
+          toprint = toprint + "%0.5f," % (autoencoder.layers[1].get_weights()[0][j,i])
+        toprint = toprint[:-1] + " PERIODIC=NO\n"
+        ofile.write(toprint)
+      for i in range(layer1):
+        onebias = autoencoder.layers[1].get_weights()[1][i]
+        if onebias>0.0:
+          if actfun1 == 'elu': printfun = "(exp(x+%0.5f)-1.0)*step(-x-%0.5f)+(x+%0.5f)*step(x+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'selu': printfun = "1.0507*(1.67326*exp(x+%0.5f)-1.67326)*step(-x-%0.5f)+1.0507*(x+%0.5f)*step(x+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'softplus': printfun = "log(1.0+exp(x+%0.5f))" % (onebias)
+          elif actfun1 == 'softsign': printfun = "(x+%0.5f)/(1.0+step(x+%0.5f)*(x+%0.5f))" % (onebias,onebias,onebias)
+          elif actfun1 == 'relu': printfun = "step(x+%0.5f)*(x+%0.5f)" % (onebias,onebias)
+          elif actfun1 == 'tanh': printfun = "(exp(x+%0.5f)-exp(-x-%0.5f))/(exp(x+%0.5f)+exp(-x-%0.5f))" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x-%0.5f))" % (onebias)
+          elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5+%0.5f)*step(x-2.5+%0.5f)*(0.2*(x+%0.5f)+0.5) + step(x-2.5+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun1 == 'linear': printfun = "(x-%0.5f)" % (onebias)
+        else:
+          if actfun1 == 'elu': printfun = "(exp(x-%0.5f)-1.0)*step(-x+%0.5f)+(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'selu': printfun = "1.0507*(1.67326*exp(x-%0.5f)-1.67326)*step(-x+%0.5f)+1.0507*(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'softplus': printfun = "log(1.0+exp(x-%0.5f))" % (-onebias)
+          elif actfun1 == 'softsign': printfun = "(x-%0.5f)/(1.0+step(x-%0.5f)*(x-%0.5f))" % (-onebias,-onebias,-onebias)
+          elif actfun1 == 'relu': printfun = "step(x-%0.5f)*(x-%0.5f)" % (-onebias,-onebias)
+          elif actfun1 == 'tanh': printfun = "(exp(x-%0.5f)-exp(-x+%0.5f))/(exp(x-%0.5f)+exp(-x+%0.5f))" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x+%0.5f))" % (-onebias)
+          elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5-%0.5f)*step(x-2.5-%0.5f)*(0.2*(x-%0.5f)+0.5) + step(x-2.5-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun1 == 'linear': printfun = "(x+%0.5f)" % (-onebias)
+        ofile.write("l1r_%i: MATHEVAL ARG=l1_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
+      for i in range(layer2):
+        toprint = "l2_%i: COMBINE ARG=" % (i+1)
+        for j in range(layer1):
+          toprint = toprint + "1lr_%i," % (j+1)
+        toprint = toprint[:-1] + " COEFFICIENTS="
+        for j in range(layer1):
+          toprint = toprint + "%0.5f," % (autoencoder.layers[2].get_weights()[0][j,i])
+        toprint = toprint[:-1] + " PERIODIC=NO\n"
+        ofile.write(toprint)
+      for i in range(layer2):
+        onebias = autoencoder.layers[2].get_weights()[1][i]
+        if onebias>0.0:
+          if actfun2 == 'elu': printfun = "(exp(x+%0.5f)-1.0)*step(-x-%0.5f)+(x+%0.5f)*step(x+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun2 == 'selu': printfun = "1.0507*(1.67326*exp(x+%0.5f)-1.67326)*step(-x-%0.5f)+1.0507*(x+%0.5f)*step(x+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun2 == 'softplus': printfun = "log(1.0+exp(x+%0.5f))" % (onebias)
+          elif actfun2 == 'softsign': printfun = "(x+%0.5f)/(1.0+step(x+%0.5f)*(x+%0.5f))" % (onebias,onebias,onebias)
+          elif actfun2 == 'relu': printfun = "step(x+%0.5f)*(x+%0.5f)" % (onebias,onebias)
+          elif actfun2 == 'tanh': printfun = "(exp(x+%0.5f)-exp(-x-%0.5f))/(exp(x+%0.5f)+exp(-x-%0.5f))" % (onebias,onebias,onebias,onebias)
+          elif actfun2 == 'sigmoid': printfun = "1.0/(1.0+exp(-x-%0.5f))" % (onebias)
+          elif actfun2 == 'hard_sigmoid': printfun = "step(x+2.5+%0.5f)*step(x-2.5+%0.5f)*(0.2*(x+%0.5f)+0.5) + step(x-2.5+%0.5f)" % (onebias,onebias,onebias,onebias)
+          elif actfun2 == 'linear': printfun = "(x-%0.5f)" % (onebias)
+        else:
+          if actfun2 == 'elu': printfun = "(exp(x-%0.5f)-1.0)*step(-x+%0.5f)+(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun2 == 'selu': printfun = "1.0507*(1.67326*exp(x-%0.5f)-1.67326)*step(-x+%0.5f)+1.0507*(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun2 == 'softplus': printfun = "log(1.0+exp(x-%0.5f))" % (-onebias)
+          elif actfun2 == 'softsign': printfun = "(x-%0.5f)/(1.0+step(x-%0.5f)*(x-%0.5f))" % (-onebias,-onebias,-onebias)
+          elif actfun2 == 'relu': printfun = "step(x-%0.5f)*(x-%0.5f)" % (-onebias,-onebias)
+          elif actfun2 == 'tanh': printfun = "(exp(x-%0.5f)-exp(-x+%0.5f))/(exp(x-%0.5f)+exp(-x+%0.5f))" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun2 == 'sigmoid': printfun = "1.0/(1.0+exp(-x+%0.5f))" % (-onebias)
+          elif actfun2 == 'hard_sigmoid': printfun = "step(x+2.5-%0.5f)*step(x-2.5-%0.5f)*(0.2*(x-%0.5f)+0.5) + step(x-2.5-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
+          elif actfun2 == 'linear': printfun = "(x+%0.5f)" % (-onebias)
+        ofile.write("l2r_%i: MATHEVAL ARG=l1_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
+      for i in range(encdim):
+        toprint = "l3_%i: COMBINE ARG=" % (i+1)
+        for j in range(layer2):
+          toprint = toprint + "l2r_%i," % (j+1)
+        toprint = toprint[:-1] + " COEFFICIENTS="
+        for j in range(layer2):
+          toprint = toprint + "%0.5f," % (autoencoder.layers[3].get_weights()[0][j,i])
+        toprint = toprint[:-1] + " PERIODIC=NO\n"
+        ofile.write(toprint)
+      for i in range(encdim):
+        if autoencoder.layers[2].get_weights()[1][i]>0.0:
+          ofile.write("l3r_%i: MATHEVAL ARG=l3_%i FUNC=x+%0.5f PERIODIC=NO\n" % (i+1,i+1,autoencoder.layers[3].get_weights()[1][i]))
+        else:
+          ofile.write("l3r_%i: MATHEVAL ARG=l3_%i FUNC=x-%0.5f PERIODIC=NO\n" % (i+1,i+1,-autoencoder.layers[3].get_weights()[1][i]))
+      toprint = "PRINT ARG="
+      for i in range(encdim):
+        toprint = toprint + "l3r_%i," % (i+1)
+      toprint = toprint[:-1] + " STRIDE=100 FILE=COLVAR\n"
+      ofile.write(toprint)
+    ofile.close()
   return autoencoder
   
 if __name__ == "__main__":
@@ -368,8 +521,8 @@ if __name__ == "__main__":
   parser.add_argument('-actfun1', dest='actfun1', default='sigmoid',
   help='Activation function of the first layer (default = sigmoid, for options see keras documentation)')
   
-  parser.add_argument('-actfun2', dest='actfun2', default='sigmoid',
-  help='Activation function of the second layer (default = sigmoid, for options see keras documentation)')
+  parser.add_argument('-actfun2', dest='actfun2', default='linear',
+  help='Activation function of the second layer (default = linear, for options see keras documentation)')
   
   parser.add_argument('-optim', dest='optim', default='adam',
   help='Optimizer (default = adam, for options see keras documentation)')
@@ -445,6 +598,9 @@ if __name__ == "__main__":
     if args.actfun2 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
       print "ERROR: cannot understand -actfun2 %s" % args.actfun1
       exit(0)
+  if args.layers == 2 and args.actfun2!='linear':
+    print "ERROR: actfun2 must be linear for -layers 2"
+    exit(0)
   layers = args.layers
   layer1 = args.layer1
   layer2 = args.layer2
@@ -487,12 +643,15 @@ if __name__ == "__main__":
   modelfile = args.modelfile
   #collectivefile = args.collectivefile
   #ncollective = args.ncollective
+  plumedfile = args.plumedfile
+  if plumedfile[-4:] != '.dat':
+    plumedfile = plumedfile + '.dat'
   encodetrajectory(infilename, intopname, plotfilename,
                    boxx, boxy, boxz, atestset,
                    shuffle, layers, layer1, layer2,
                    encdim, actfun1, actfun2,
                    optim, loss, epochs, batch,
                    lowfilename, lowfiletype, highfilename, highfiletype,
-                   filterfilename, modelfile)
+                   filterfilename, modelfile, plumedfile)
 
 
