@@ -85,8 +85,10 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     encoded = krs.layers.Dense(layer2, activation=actfun2, use_bias=True)(encoded)
   encoded = krs.layers.Dense(encdim, activation='linear', use_bias=True)(encoded)
   if layers == 3:
-    encoded = krs.layers.Dense(layer2, activation=actfun2, use_bias=True)(encoded)
-  decoded = krs.layers.Dense(layer1, activation=actfun1, use_bias=True)(encoded)
+    decoded = krs.layers.Dense(layer2, activation=actfun2, use_bias=True)(encoded)
+    decoded = krs.layers.Dense(layer1, activation=actfun1, use_bias=True)(decoded)
+  else:
+    decoded = krs.layers.Dense(layer1, activation=actfun1, use_bias=True)(encoded)
   decoded = krs.layers.Dense(trajsize[1]*3, activation='linear', use_bias=True)(decoded)
   autoencoder = krs.models.Model(input_coord, decoded)
   
