@@ -6,7 +6,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      encdim=3, actfun1='sigmoid', actfun2='sigmoid',
                      optim='adam', loss='mean_squared_error', epochs=100, batch=0,
                      lowfilename='', lowfiletype='', highfilename='', highfiletype='',
-                     filterfilename='', modelfile='', plumedfile=''):
+                     filterfilename='', modelfile='', plumedfile='', collectivefile=''):
   # Loading trajectory
   try:
     traj = md.load(infilename, top=intopname)
@@ -260,62 +260,61 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       np.save(file=modelfile+"_6.npy", arr=autoencoder.layers[6].get_weights())
   
   # Saving collective motions trajectories
-  #if collectivefile != '':
-  #  if collectivefile[-4:] == '.xtc':
-  #    collectivefile = collectivefile[:-4]
-  #  traj = traj[:ncollective]
-  #  print "Writing collective motion into %s_1.xtc" % collectivefile
-  #  print
-  #  collective = np.zeros((ncollective, 3))
-  #  cvmin = np.amin(encoded_coords[:,0])
-  #  cvmax = np.amax(encoded_coords[:,0])
-  #  for i in range(ncollective):
-  #    collective[i,0] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
-  #    collective[i,1] = np.mean(encoded_coords[:,1])
-  #    collective[i,2] = np.mean(encoded_coords[:,2])
-  #  collective2 = decoder.predict(collective)
-  #  collective3 = np.zeros((ncollective, trajsize[1], 3))
-  #  for i in range(trajsize[1]):
-  #    collective3[:,i,0] = collective2[:,3*i]*maxbox
-  #    collective3[:,i,1] = collective2[:,3*i+1]*maxbox
-  #    collective3[:,i,2] = collective2[:,3*i+2]*maxbox
-  #  traj.xyz = collective3
-  #  traj.save_xtc(collectivefile+"_1.xtc")
-  #  print "Writing collective motion into %s_2.xtc" % collectivefile
-  #  print
-  #  collective = np.zeros((ncollective, 3))
-  #  cvmin = np.amin(encoded_coords[:,1])
-  #  cvmax = np.amax(encoded_coords[:,1])
-  #  for i in range(ncollective):
-  #    collective[i,0] = np.mean(encoded_coords[:,0])
-  #    collective[i,1] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
-  #    collective[i,2] = np.mean(encoded_coords[:,2])
-  #  collective2 = decoder.predict(collective)
-  #  collective3 = np.zeros((ncollective, trajsize[1], 3))
-  #  for i in range(trajsize[1]):
-  #    collective3[:,i,0] = collective2[:,3*i]*maxbox
-  #    collective3[:,i,1] = collective2[:,3*i+1]*maxbox
-  #    collective3[:,i,2] = collective2[:,3*i+2]*maxbox
-  #  traj.xyz = collective3
-  #  traj.save_xtc(collectivefile+"_2.xtc")
-  #  print "Writing collective motion into %s_3.xtc" % collectivefile
-  #  print
-  #  collective = np.zeros((ncollective, 3))
-  #  cvmin = np.amin(encoded_coords[:,2])
-  #  cvmax = np.amax(encoded_coords[:,2])
-  #  for i in range(args.ncollective):
-  #    collective[i,0] = np.mean(encoded_coords[:,0])
-  #    collective[i,1] = np.mean(encoded_coords[:,1])
-  #    collective[i,2] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
-  #  collective2 = decoder.predict(collective)
-  #  collective3 = np.zeros((ncollective, trajsize[1], 3))
-  #  for i in range(trajsize[1]):
-  #    collective3[:,i,0] = collective2[:,3*i]*maxbox
-  #    collective3[:,i,1] = collective2[:,3*i+1]*maxbox
-  #    collective3[:,i,2] = collective2[:,3*i+2]*maxbox
-  #  traj.xyz = collective3
-  #  traj.save_xtc(collectivefile+"_3.xtc")
-  #
+  if collectivefile != '':
+    if collectivefile[-4:] == '.xtc':
+      collectivefile = collectivefile[:-4]
+    traj = traj[:ncollective]
+    print "Writing collective motion into %s_1.xtc" % collectivefile
+    print
+    collective = np.zeros((ncollective, 3))
+    cvmin = np.amin(encoded_coords[:,0])
+    cvmax = np.amax(encoded_coords[:,0])
+    for i in range(ncollective):
+      collective[i,0] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
+      collective[i,1] = np.mean(encoded_coords[:,1])
+      collective[i,2] = np.mean(encoded_coords[:,2])
+    collective2 = decoder.predict(collective)
+    collective3 = np.zeros((ncollective, trajsize[1], 3))
+    for i in range(trajsize[1]):
+      collective3[:,i,0] = collective2[:,3*i]*maxbox
+      collective3[:,i,1] = collective2[:,3*i+1]*maxbox
+      collective3[:,i,2] = collective2[:,3*i+2]*maxbox
+    traj.xyz = collective3
+    traj.save_xtc(collectivefile+"_1.xtc")
+    print "Writing collective motion into %s_2.xtc" % collectivefile
+    print
+    collective = np.zeros((ncollective, 3))
+    cvmin = np.amin(encoded_coords[:,1])
+    cvmax = np.amax(encoded_coords[:,1])
+    for i in range(ncollective):
+      collective[i,0] = np.mean(encoded_coords[:,0])
+      collective[i,1] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
+      collective[i,2] = np.mean(encoded_coords[:,2])
+    collective2 = decoder.predict(collective)
+    collective3 = np.zeros((ncollective, trajsize[1], 3))
+    for i in range(trajsize[1]):
+      collective3[:,i,0] = collective2[:,3*i]*maxbox
+      collective3[:,i,1] = collective2[:,3*i+1]*maxbox
+      collective3[:,i,2] = collective2[:,3*i+2]*maxbox
+    traj.xyz = collective3
+    traj.save_xtc(collectivefile+"_2.xtc")
+    print "Writing collective motion into %s_3.xtc" % collectivefile
+    print
+    collective = np.zeros((ncollective, 3))
+    cvmin = np.amin(encoded_coords[:,2])
+    cvmax = np.amax(encoded_coords[:,2])
+    for i in range(args.ncollective):
+      collective[i,0] = np.mean(encoded_coords[:,0])
+      collective[i,1] = np.mean(encoded_coords[:,1])
+      collective[i,2] = cvmin+(cvmax-cvmin)*float(i)/float(ncollective-1)
+    collective2 = decoder.predict(collective)
+    collective3 = np.zeros((ncollective, trajsize[1], 3))
+    for i in range(trajsize[1]):
+      collective3[:,i,0] = collective2[:,3*i]*maxbox
+      collective3[:,i,1] = collective2[:,3*i+1]*maxbox
+      collective3[:,i,2] = collective2[:,3*i+2]*maxbox
+    traj.xyz = collective3
+    traj.save_xtc(collectivefile+"_3.xtc")
   
   if plumedfile != '':
     print "Writing Plumed input into %s" % plumedfile
@@ -548,11 +547,11 @@ if __name__ == "__main__":
   help='Output file with encoded-decoded trajectory in .xtc format (default = no output)')
   
   # Extraction of collective motions does not work very well
-  #parser.add_argument('-collective', dest='collectivefile', default='',
-  #help='Output files with collective motions trajectories in .xtc format (default = no output)')
-  #
-  #parser.add_argument('-ncollective', dest='ncollective', default=10, type=int,
-  #help='Number of frames in collective motions trajectories (default = 20)')
+  parser.add_argument('-collective', dest='collectivefile', default='',
+  help='Output files with collective motions trajectories in .xtc format (default = no output)')
+  
+  parser.add_argument('-ncollective', dest='ncollective', default=10, type=int,
+  help='Number of frames in collective motions trajectories (default = 20)')
   
   parser.add_argument('-model', dest='modelfile', default='',
   help='Prefix for output model files (experimental, default = no output)')
@@ -643,8 +642,8 @@ if __name__ == "__main__":
     if filterfilename[-4:] != '.xtc':
       filterfilename = filterfilename + '.xtc'
   modelfile = args.modelfile
-  #collectivefile = args.collectivefile
-  #ncollective = args.ncollective
+  collectivefile = args.collectivefile
+  ncollective = args.ncollective
   plumedfile = args.plumedfile
   if plumedfile != '':
     if plumedfile[-4:] != '.dat':
@@ -655,6 +654,6 @@ if __name__ == "__main__":
                    encdim, actfun1, actfun2,
                    optim, loss, epochs, batch,
                    lowfilename, lowfiletype, highfilename, highfiletype,
-                   filterfilename, modelfile, plumedfile)
+                   filterfilename, modelfile, plumedfile, collectivefile)
 
 
