@@ -1,5 +1,17 @@
 #!/usr/bin/env python
 
+# Loading necessary libraries
+libnames = [('mdtraj', 'md'), ('numpy', 'np'), ('keras', 'krs'), ('argparse', 'arg'), ('datetime', 'dt'), ('sys', 'sys')]
+
+for (name, short) in libnames:
+  try:
+    lib = __import__(name)
+  except:
+    print "Library %s is not installed, exiting" % name
+    exit(0)
+  else:
+    globals()[short] = lib
+
 def encodetrajectory(infilename='', intopname='', plotfilename='',
                      boxx=0.0, boxy=0.0, boxz=0.0, atestset=0.1,
                      shuffle=1, layers=2, layer1=256, layer2=256,
@@ -471,18 +483,6 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   return autoencoder
   
 if __name__ == "__main__":
-  # Loading necessary libraries
-  libnames = [('mdtraj', 'md'), ('numpy', 'np'), ('keras', 'krs'), ('argparse', 'arg'), ('datetime', 'dt'), ('sys', 'sys')]
-  
-  for (name, short) in libnames:
-    try:
-      lib = __import__(name)
-    except:
-      print "Library %s is not installed, exiting" % name
-      exit(0)
-    else:
-      globals()[short] = lib
-  
   # Parsing command line arguments
   parser = arg.ArgumentParser(description='(Deep learning) autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj')
   
