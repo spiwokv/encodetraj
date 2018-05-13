@@ -61,7 +61,7 @@ optional arguments:
                       see keras documentation)
   -epochs EPOCHS      Number of epochs (default = 100, >1000 may be necessary
                       for real life applications)
-  -batch BATCH        Batch size (0 = no batches, default = 256)
+  -batch BATCH        Batchsize (0 = no batches, default = 256)
   -low LOWFILE        Output file with low-dimensional embedings (xvg or txt,
                       default = no output)
   -high HIGHFILE      Output file with original coordinates and encoded-
