@@ -5,7 +5,7 @@ for (name, short) in libnames:
   try:
     lib = __import__(name)
   except:
-    print "Library %s is not installed, exiting" % name
+    print("Library %s is not installed, exiting" % name)
     exit(0)
   else:
     globals()[short] = lib
@@ -20,11 +20,11 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   try:
     traj = md.load(infilename, top=intopname)
   except:
-    print "Cannot load %s or %s, exiting." % (infilename, intopname)
+    print("Cannot load %s or %s, exiting." % (infilename, intopname))
     exit(0)
   else:
-    print "%s succesfully loaded" % traj
-  print
+    print("%s succesfully loaded" % traj)
+  print()
   # Ploting model scheme
   plotfiletype = 0
   if plotfilename != '':
@@ -42,44 +42,44 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   # Checking whether all atoms fit the box
   if (np.amin(traj2)) < 0.0:
-    print "ERROR: Some of atom has negative coordinate (i.e. it is outside the box)"
+    print("ERROR: Some of atom has negative coordinate (i.e. it is outside the box)")
     exit(0)
 
   if boxx == 0.0 or boxy == 0.0 or boxz == 0.0:
-    print "WARNING: box size not set, it will be determined automatically"
+    print("WARNING: box size not set, it will be determined automatically")
     if boxx == 0.0:
       boxx = 1.2*np.amax(traj.xyz[:,:,0])
     if boxy == 0.0:
       boxy = 1.2*np.amax(traj.xyz[:,:,1])
     if boxz == 0.0:
       boxz = 1.2*np.amax(traj.xyz[:,:,2])
-    print "box size set to %6.3f x %6.3f x %6.3f nm" % (boxx, boxy, boxz)
-    print
+    print("box size set to %6.3f x %6.3f x %6.3f nm" % (boxx, boxy, boxz))
+    print()
   
   if np.amax(traj.xyz[:,:,0]) > boxx or np.amax(traj.xyz[:,:,1]) > boxy or np.amax(traj.xyz[:,:,2]) > boxz:
-    print "ERROR: Some of atom has coordinate higher than box size (i.e. it is outside the box)"
+    print("ERROR: Some of atom has coordinate higher than box size (i.e. it is outside the box)")
     exit(0)
   
   if boxx > 2.0*np.amax(traj.xyz[:,:,0]) or boxy > 2.0*np.amax(traj.xyz[:,:,0]) or boxz > 2.0*np.amax(traj.xyz[:,:,0]):
-    print "WARNING: Box size is bigger than 2x of highest coordinate,"
-    print "maybe the box is too big or the molecule is not centered"
+    print("WARNING: Box size is bigger than 2x of highest coordinate,")
+    print("maybe the box is too big or the molecule is not centered")
   
   maxbox = max([boxx, boxy, boxz])
 
   # Splitting the trajectory into training and testing sets
   testsize = int(atestset * trajsize[0])
   if testsize < 1:
-    print "ERROR: testset empty, increase testsize"
+    print("ERROR: testset empty, increase testsize")
     exit(0)
-  print "Training and test sets consist of %i and %i trajectory frames, respectively" % (trajsize[0]-testsize, testsize)
-  print
+  print("Training and test sets consist of %i and %i trajectory frames, respectively" % (trajsize[0]-testsize, testsize))
+  print()
   
   # Shuffling the trajectory before splitting
   if shuffle == 1:
-    print "Trajectory will be shuffled before splitting into training and test set"
+    print("Trajectory will be shuffled before splitting into training and test set")
   elif shuffle == 0:
-    print "Trajectory will NOT be shuffled before splitting into training and test set"
-    print "(first %i frames will be used for trainintg, next %i for testing)" % (trajsize[0]-testsize, testsize)
+    print("Trajectory will NOT be shuffled before splitting into training and test set")
+    print("(first %i frames will be used for trainintg, next %i for testing)" % (trajsize[0]-testsize, testsize))
   indexes = range(trajsize[0])
   if shuffle == 1:
     np.random.shuffle(indexes)
@@ -131,25 +131,25 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   # Calculating Pearson correlation coefficient
   vec1 = traj2.reshape((trajsize[0]*trajsize[1]*3))
   vec2 = decoded_coords.reshape((trajsize[0]*trajsize[1]*3))*maxbox
-  print
-  print "Pearson correlation coefficient for encoded-decoded trajectory is %f" % np.corrcoef(vec1,vec2)[0,1]
-  print
+  print()
+  print("Pearson correlation coefficient for encoded-decoded trajectory is %f" % np.corrcoef(vec1,vec2)[0,1])
+  print()
   
   #training_set, testing_set = traj2[indexes[:-testsize],:]/maxbox, traj2[indexes[-testsize:],:]/maxbox
   vec1 = traj2[indexes[:-testsize],:].reshape(((trajsize[0]-testsize)*trajsize[1]*3))
   vec2 = decoded_coords[indexes[:-testsize],:].reshape(((trajsize[0]-testsize)*trajsize[1]*3))*maxbox
-  print "Pearson correlation coefficient for encoded-decoded training set is %f" % np.corrcoef(vec1,vec2)[0,1]
-  print
+  print("Pearson correlation coefficient for encoded-decoded training set is %f" % np.corrcoef(vec1,vec2)[0,1])
+  print()
   
   vec1 = traj2[indexes[-testsize:],:].reshape((testsize*trajsize[1]*3))
   vec2 = decoded_coords[indexes[-testsize:],:].reshape((testsize*trajsize[1]*3))*maxbox
-  print "Pearson correlation coefficient for encoded-decoded testing set is %f" % np.corrcoef(vec1,vec2)[0,1]
-  print  
+  print("Pearson correlation coefficient for encoded-decoded testing set is %f" % np.corrcoef(vec1,vec2)[0,1])
+  print() 
   
   # Generating low-dimensional output
   if lowfiletype > 0:
-    print "Writing low-dimensional embeddings into %s" % lowfilename
-    print
+    print("Writing low-dimensional embeddings into %s" % lowfilename)
+    print()
     if lowfiletype == 1:
       ofile = open(lowfilename, "w")
       ofile.write("# This file was created on %s\n" % dt.datetime.now().isoformat())
@@ -183,8 +183,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   # Generating high-dimensional output
   if highfiletype > 0:
-    print "Writing original and encoded-decoded coordinates into %s" % highfilename
-    print
+    print("Writing original and encoded-decoded coordinates into %s" % highfilename)
+    print()
     if highfiletype == 1:
       ofile = open(highfilename, "w")
       ofile.write("# This file was created on %s\n" % dt.datetime.now().isoformat())
@@ -218,8 +218,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   # Generating filtered trajectory
   if filterfilename != '':
-    print "Writing encoded-decoded trajectory into %s" % filterfilename
-    print
+    print("Writing encoded-decoded trajectory into %s" % filterfilename)
+    print()
     decoded_coords2 = np.zeros((trajsize[0], trajsize[1], 3))
     for i in range(trajsize[1]):
       decoded_coords2[:,i,0] = decoded_coords[:,3*i]*maxbox
@@ -230,14 +230,14 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   
   # Saving a plot of the model
   if plotfiletype == 1:
-    print "Printing model into %s" % plotfilename
-    print
+    print("Printing model into %s" % plotfilename)
+    print()
     krs.utils.plot_model(autoencoder, show_shapes=True, to_file=plotfilename)
   
   # Saving the model
   if modelfile != '':
-    print "Writing model into %s.txt" % modelfile
-    print
+    print("Writing model into %s.txt" % modelfile)
+    print()
     ofile = open(modelfile+'.txt', "w")
     ofile.write("maxbox = %f\n" % maxbox)
     ofile.write("input_coord = krs.layers.Input(shape=(trajsize[1]*3,))\n")
@@ -251,8 +251,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     ofile.write("decoded = krs.layers.Dense(trajsize[1]*3, activation='linear', use_bias=True)(decoded)\n")
     ofile.write("autoencoder = krs.models.Model(input_coord, decoded)\n")
     ofile.close()
-    print "Writing model weights and biases into %s_*.npy NumPy arrays" % modelfile
-    print
+    print("Writing model weights and biases into %s_*.npy NumPy arrays" % modelfile)
+    print()
     if layers == 2:
       np.save(file=modelfile+"_1.npy", arr=autoencoder.layers[1].get_weights())
       np.save(file=modelfile+"_2.npy", arr=autoencoder.layers[2].get_weights())
@@ -271,8 +271,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     if collectivefile[-4:] == '.xtc':
       collectivefile = collectivefile[:-4]
     traj = traj[:ncollective]
-    print "Writing collective motion into %s_1.xtc" % collectivefile
-    print
+    print("Writing collective motion into %s_1.xtc" % collectivefile)
+    print()
     collective = np.zeros((ncollective, 3))
     cvmin = np.amin(encoded_coords[:,0])
     cvmax = np.amax(encoded_coords[:,0])
@@ -288,8 +288,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       collective3[:,i,2] = collective2[:,3*i+2]*maxbox
     traj.xyz = collective3
     traj.save_xtc(collectivefile+"_1.xtc")
-    print "Writing collective motion into %s_2.xtc" % collectivefile
-    print
+    print("Writing collective motion into %s_2.xtc" % collectivefile)
+    print()
     collective = np.zeros((ncollective, 3))
     cvmin = np.amin(encoded_coords[:,1])
     cvmax = np.amax(encoded_coords[:,1])
@@ -305,8 +305,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       collective3[:,i,2] = collective2[:,3*i+2]*maxbox
     traj.xyz = collective3
     traj.save_xtc(collectivefile+"_2.xtc")
-    print "Writing collective motion into %s_3.xtc" % collectivefile
-    print
+    print("Writing collective motion into %s_3.xtc" % collectivefile)
+    print()
     collective = np.zeros((ncollective, 3))
     cvmin = np.amin(encoded_coords[:,2])
     cvmax = np.amax(encoded_coords[:,2])
@@ -324,8 +324,8 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     traj.save_xtc(collectivefile+"_3.xtc")
   
   if plumedfile != '':
-    print "Writing Plumed input into %s" % plumedfile
-    print
+    print("Writing Plumed input into %s" % plumedfile)
+    print()
     traj = md.load(infilename, top=intopname)
     table, bonds = traj.topology.to_dataframe()
     atoms = table['serial'][:]
