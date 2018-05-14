@@ -17,17 +17,6 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      optim='adam', loss='mean_squared_error', epochs=100, batch=0,
                      lowfilename='', lowfiletype='', highfilename='', highfiletype='',
                      filterfilename='', modelfile='', plumedfile='', collectivefile=''):
-  # Loading trajectory
-  try:
-    traj = md.load(infilename, top=intopname)
-  except:
-    print "Cannot load %s or %s, exiting." % (infilename, intopname)
-    parser.print_help()
-    exit(0)
-  else:
-    print "%s succesfully loaded" % traj
-  print
-  
   # Ploting model scheme
   plotfiletype = 0
   if plotfilename != '':
