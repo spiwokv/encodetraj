@@ -15,7 +15,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      shuffle=1, layers=2, layer1=256, layer2=256,
                      encdim=3, actfun1='sigmoid', actfun2='sigmoid',
                      optim='adam', loss='mean_squared_error', epochs=100, batch=0,
-                     lowfilename='', lowfiletype='', highfilename='', highfiletype='',
+                     lowfilename='', lowfiletype=0, highfilename='', highfiletype=0,
                      filterfilename='', modelfile='', plumedfile='', collectivefile=''):
   try:
     traj = md.load(infilename, top=intopname)
