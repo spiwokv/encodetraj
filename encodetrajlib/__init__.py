@@ -478,5 +478,5 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
       toprint = toprint[:-1] + " STRIDE=100 FILE=COLVAR\n"
       ofile.write(toprint)
     ofile.close()
-  return autoencoder
+  return autoencoder, np.corrcoef(vec1,vec2)[0,1]
 
