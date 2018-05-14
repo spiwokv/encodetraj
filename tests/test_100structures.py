@@ -9,8 +9,8 @@ import sys
 import encodetrajlib
 
 def test_100_structures():
-  ae, cor = encodetrajlib.encodetrajectory(infilename='traj_fit_small.xtc',
-                                           intopname='reference.pdb',
+  ae, cor = encodetrajlib.encodetrajectory(infilename='./traj_fit_small.xtc',
+                                           intopname='./reference.pdb',
                                            boxx=1, boxy=1, boxz=1, epochs=2000)
   assert(cor > 0.95)
 
