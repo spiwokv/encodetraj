@@ -30,8 +30,8 @@ install:
   - conda info -a
   - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pytest pandas
   - source activate test-environment
-  - pip install --only-binary=numpy numpy nose cython h5py theano
-  #- conda install mkl mkl-service
+  - pip install --only-binary=numpy numpy nose cython h5py theano argparse
+  - conda install mkl mkl-service
   - export LD_LIBRARY_PATH=$HOME/miniconda/envs/test-environment/lib/:$LD_LIBRARY_PATH
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       conda install pil;
@@ -60,10 +60,9 @@ install:
   - for entry in `git diff --name-only HEAD~1`; do if [[ "$entry" == "keras/applications/"* ]]; then export APP_CHANGED=True; fi; done
 
 script:
-  #- export MKL_THREADING_LAYER="GNU"
+  - export MKL_THREADING_LAYER="GNU"
   - python -c "import keras.backend"
   #- mkdir ~/.keras/datasets
-  # set up keras backend
   - sed -i -e 's/"backend":[[:space:]]*"[^"]*/"backend":\ "'$KERAS_BACKEND'/g' ~/.keras/keras.json;
   - echo -e "Running tests with the following config:\n$(cat ~/.keras/keras.json)"
   - PYTHONPATH=$PWD:$PYTHONPATH py.test tests;
