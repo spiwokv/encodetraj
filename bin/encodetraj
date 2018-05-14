@@ -177,15 +177,6 @@ plumedfile = args.plumedfile
 if plumedfile != '':
   if plumedfile[-4:] != '.dat':
     plumedfile = plumedfile + '.dat'
-try:
-  traj = md.load(infilename, top=intopname)
-except:
-  print "Cannot load %s or %s, exiting." % (infilename, intopname)
-  parser.print_help()
-  exit(0)
-else:
-  print "%s succesfully loaded" % traj
-print
 encodetrajlib.encodetrajectory(infilename, intopname, plotfilename,
                                boxx, boxy, boxz, atestset,
                                shuffle, layers, layer1, layer2,
