@@ -80,7 +80,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
   elif shuffle == 0:
     print("Trajectory will NOT be shuffled before splitting into training and test set")
     print("(first %i frames will be used for trainintg, next %i for testing)" % (trajsize[0]-testsize, testsize))
-  indexes = range(trajsize[0])
+  indexes = list(range(trajsize[0]))
   if shuffle == 1:
     np.random.shuffle(indexes)
   training_set, testing_set = traj2[indexes[:-testsize],:]/maxbox, traj2[indexes[-testsize:],:]/maxbox
