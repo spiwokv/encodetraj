@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/spiwokv/encodetraj.svg?branch=master)](https://travis-ci.org/spiwokv/encodetraj)
+
 ## encodetraj
 
 ### (Deep learning) autoencoders for molecular trajectory analysis
