@@ -126,7 +126,7 @@ if args.actfun1 not in ['softmax','elu','selu','softplus','softsign','relu','tan
   exit(0)
 if args.layers == 3:
   if args.actfun2 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
-    print "ERROR: cannot understand -actfun2 %s" % args.actfun1
+    print "ERROR: cannot understand -actfun2 %s" % args.actfun2
     exit(0)
 if args.layers == 2 and args.actfun2!='linear':
   print "ERROR: actfun2 must be linear for -layers 2"
