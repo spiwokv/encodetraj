@@ -100,8 +100,8 @@ plotfilename = args.plotfile
 boxx = args.boxx
 boxy = args.boxy
 boxz = args.boxz
-if args.testset < 0.0 or args.testset > 0.5:
-  print "ERROR: -testset must be 0.0 - 0.5"
+if args.testset < 0.0 or args.testset > 1.0:
+  print "ERROR: -testset must be 0.0 - 1.0"
   exit(0)
 atestset = float(args.testset)
 
