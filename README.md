@@ -15,7 +15,7 @@ encodetraj -i traj_fit.xtc -p reference.pdb -boxx 1 -boxy 1 -boxz 1 -testset 0.2
 
 Usage:
 ```
-usage: encodetraj.py [-h] [-i INFILE] [-p INTOP] [-boxx BOXX] [-boxy BOXY]
+usage: encodetraj    [-h] [-i INFILE] [-p INTOP] [-boxx BOXX] [-boxy BOXY]
                      [-boxz BOXZ] [-testset TESTSET] [-shuffle SHUFFLE]
                      [-layers LAYERS] [-layer1 LAYER1] [-layer2 LAYER2]
                      [-encdim ENCDIM] [-actfun1 ACTFUN1] [-actfun2 ACTFUN2]
