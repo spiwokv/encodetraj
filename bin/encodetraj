@@ -121,11 +121,11 @@ if args.layer1 > 1024:
 if args.layers == 3:
   if args.layer2 > 1024:
     print "WARNING: You plan to use %i neurons in the third layer, could be slow"
-if args.actfun1 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
+if args.actfun1 not in ['elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
   print "ERROR: cannot understand -actfun1 %s" % args.actfun1
   exit(0)
 if args.layers == 3:
-  if args.actfun2 not in ['softmax','elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
+  if args.actfun2 not in ['elu','selu','softplus','softsign','relu','tanh','sigmoid','hard_sigmoid','linear']:
     print "ERROR: cannot understand -actfun2 %s" % args.actfun2
     exit(0)
 if args.layers == 2 and args.actfun2!='linear':
