@@ -2,7 +2,7 @@
 
 ## encodetraj
 
-### (Deep learning) autoencoders for molecular trajectory analysis
+### Autoencoders for molecular trajectory analysis
 
 Requires numpy, keras and mdtraj
 
