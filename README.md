@@ -24,8 +24,7 @@ usage: encodetraj    [-h] [-i INFILE] [-p INTOP] [-boxx BOXX] [-boxy BOXY]
                      [-filter FILTERFILE] [-model MODELFILE]
                      [-plumed PLUMEDFILE]
 
-(Deep learning) autoencoders for molecular trajectory analysis, requires
-numpy, keras and mdtraj
+Autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj
 
 optional arguments:
   -h, --help          show this help message and exit
