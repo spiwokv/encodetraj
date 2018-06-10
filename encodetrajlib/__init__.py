@@ -153,7 +153,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     if lowfiletype == 1:
       ofile = open(lowfilename, "w")
       ofile.write("# This file was created on %s\n" % dt.datetime.now().isoformat())
-      ofile.write("# Created by: encodetraj.py V 0.1\n")
+      ofile.write("# Created by: encodetraj V 0.1\n")
       sysargv = ""
       for item in sys.argv:
         sysargv = sysargv+item+" "
@@ -188,7 +188,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
     if highfiletype == 1:
       ofile = open(highfilename, "w")
       ofile.write("# This file was created on %s\n" % dt.datetime.now().isoformat())
-      ofile.write("# Created by: encodetraj.py V 0.1\n")
+      ofile.write("# Created by: encodetraj V 0.1\n")
       sysargv = ''
       for item in sys.argv:
         sysargv = sysargv+item+' '
