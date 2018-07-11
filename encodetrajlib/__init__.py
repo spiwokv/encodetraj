@@ -373,10 +373,10 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
         ofile.write("l1r_%i: MATHEVAL ARG=l1_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
       for i in range(encdim):
         toprint = "l2_%i: COMBINE ARG=" % (i+1)
-        for j in range(layer2):
+        for j in range(layer1):
           toprint = toprint + "l1r_%i," % (j+1)
         toprint = toprint[:-1] + " COEFFICIENTS="
-        for j in range(layer2):
+        for j in range(layer1):
           toprint = toprint + "%0.5f," % (autoencoder.layers[2].get_weights()[0][j,i])
         toprint = toprint[:-1] + " PERIODIC=NO\n"
         ofile.write(toprint)
@@ -465,7 +465,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
         toprint = toprint[:-1] + " PERIODIC=NO\n"
         ofile.write(toprint)
       for i in range(encdim):
-        if autoencoder.layers[2].get_weights()[1][i]>0.0:
+        if autoencoder.layers[3].get_weights()[1][i]>0.0:
           ofile.write("l3r_%i: MATHEVAL ARG=l3_%i FUNC=x+%0.5f PERIODIC=NO\n" % (i+1,i+1,autoencoder.layers[3].get_weights()[1][i]))
         else:
           ofile.write("l3r_%i: MATHEVAL ARG=l3_%i FUNC=x-%0.5f PERIODIC=NO\n" % (i+1,i+1,-autoencoder.layers[3].get_weights()[1][i]))
