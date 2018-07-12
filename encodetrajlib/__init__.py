@@ -361,7 +361,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
           elif actfun1 == 'tanh': printfun = "(exp(x+%0.5f)-exp(-x-%0.5f))/(exp(x+%0.5f)+exp(-x-%0.5f))" % (onebias,onebias,onebias,onebias)
           elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x-%0.5f))" % (onebias)
           elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5+%0.6f)*((0.2*(x+%0.6f)+0.5)-step(x-2.5+%0.6f)*(0.2*(x+%0.6f)-0.5))" % (onebias,onebias,onebias,onebias)
-          elif actfun1 == 'linear': printfun = "(x-%0.5f)" % (onebias)
+          elif actfun1 == 'linear': printfun = "(x+%0.5f)" % (onebias)
         else:
           if actfun1 == 'elu': printfun = "(exp(x-%0.5f)-1.0)*step(-x+%0.5f)+(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
           elif actfun1 == 'selu': printfun = "1.0507*(1.67326*exp(x-%0.5f)-1.67326)*step(-x+%0.5f)+1.0507*(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
@@ -371,7 +371,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
           elif actfun1 == 'tanh': printfun = "(exp(x-%0.5f)-exp(-x+%0.5f))/(exp(x-%0.5f)+exp(-x+%0.5f))" % (-onebias,-onebias,-onebias,-onebias)
           elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x+%0.5f))" % (-onebias)
           elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5-%0.6f)*((0.2*(x-%0.6f)+0.5)-step(x-2.5-%0.6f)*(0.2*(x-%0.6f)-0.5))" % (-onebias,-onebias,-onebias,-onebias)
-          elif actfun1 == 'linear': printfun = "(x+%0.5f)" % (-onebias)
+          elif actfun1 == 'linear': printfun = "(x-%0.5f)" % (-onebias)
         ofile.write("l1r_%i: MATHEVAL ARG=l1_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
       for i in range(encdim):
         toprint = "l2_%i: COMBINE ARG=" % (i+1)
@@ -413,7 +413,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
           elif actfun1 == 'tanh': printfun = "(exp(x+%0.5f)-exp(-x-%0.5f))/(exp(x+%0.5f)+exp(-x-%0.5f))" % (onebias,onebias,onebias,onebias)
           elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x-%0.5f))" % (onebias)
           elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5+%0.6f)*((0.2*(x+%0.6f)+0.5)-step(x-2.5+%0.6f)*(0.2*(x+%0.6f)-0.5))" % (onebias,onebias,onebias,onebias)
-          elif actfun1 == 'linear': printfun = "(x-%0.5f)" % (onebias)
+          elif actfun1 == 'linear': printfun = "(x+%0.5f)" % (onebias)
         else:
           if actfun1 == 'elu': printfun = "(exp(x-%0.5f)-1.0)*step(-x+%0.5f)+(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
           elif actfun1 == 'selu': printfun = "1.0507*(1.67326*exp(x-%0.5f)-1.67326)*step(-x+%0.5f)+1.0507*(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
@@ -423,7 +423,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
           elif actfun1 == 'tanh': printfun = "(exp(x-%0.5f)-exp(-x+%0.5f))/(exp(x-%0.5f)+exp(-x+%0.5f))" % (-onebias,-onebias,-onebias,-onebias)
           elif actfun1 == 'sigmoid': printfun = "1.0/(1.0+exp(-x+%0.5f))" % (-onebias)
           elif actfun1 == 'hard_sigmoid': printfun = "step(x+2.5-%0.6f)*((0.2*(x-%0.6f)+0.5)-step(x-2.5-%0.6f)*(0.2*(x-%0.6f)-0.5))" % (-onebias,-onebias,-onebias,-onebias)
-          elif actfun1 == 'linear': printfun = "(x+%0.5f)" % (-onebias)
+          elif actfun1 == 'linear': printfun = "(x-%0.5f)" % (-onebias)
         ofile.write("l1r_%i: MATHEVAL ARG=l1_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
       for i in range(layer2):
         toprint = "l2_%i: COMBINE ARG=" % (i+1)
@@ -445,7 +445,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
           elif actfun2 == 'tanh': printfun = "(exp(x+%0.5f)-exp(-x-%0.5f))/(exp(x+%0.5f)+exp(-x-%0.5f))" % (onebias,onebias,onebias,onebias)
           elif actfun2 == 'sigmoid': printfun = "1.0/(1.0+exp(-x-%0.5f))" % (onebias)
           elif actfun2 == 'hard_sigmoid': printfun = "step(x+2.5+%0.6f)*((0.2*(x+%0.6f)+0.5)-step(x-2.5+%0.6f)*(0.2*(x+%0.6f)-0.5))" % (onebias,onebias,onebias,onebias)
-          elif actfun2 == 'linear': printfun = "(x-%0.5f)" % (onebias)
+          elif actfun2 == 'linear': printfun = "(x+%0.5f)" % (onebias)
         else:
           if actfun2 == 'elu': printfun = "(exp(x-%0.5f)-1.0)*step(-x+%0.5f)+(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
           elif actfun2 == 'selu': printfun = "1.0507*(1.67326*exp(x-%0.5f)-1.67326)*step(-x+%0.5f)+1.0507*(x-%0.5f)*step(x-%0.5f)" % (-onebias,-onebias,-onebias,-onebias)
@@ -455,7 +455,7 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
           elif actfun2 == 'tanh': printfun = "(exp(x-%0.5f)-exp(-x+%0.5f))/(exp(x-%0.5f)+exp(-x+%0.5f))" % (-onebias,-onebias,-onebias,-onebias)
           elif actfun2 == 'sigmoid': printfun = "1.0/(1.0+exp(-x+%0.5f))" % (-onebias)
           elif actfun2 == 'hard_sigmoid': printfun = "step(x+2.5-%0.6f)*((0.2*(x-%0.6f)+0.5)-step(x-2.5-%0.6f)*(0.2*(x-%0.6f)-0.5))" % (-onebias,-onebias,-onebias,-onebias)
-          elif actfun2 == 'linear': printfun = "(x+%0.5f)" % (-onebias)
+          elif actfun2 == 'linear': printfun = "(x-%0.5f)" % (-onebias)
         ofile.write("l2r_%i: MATHEVAL ARG=l2_%i FUNC=%s PERIODIC=NO\n" % (i+1,i+1,printfun))
       for i in range(encdim):
         toprint = "l3_%i: COMBINE ARG=" % (i+1)
