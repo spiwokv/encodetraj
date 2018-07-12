@@ -18,7 +18,9 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      lowfilename='', lowfiletype=0, highfilename='', highfiletype=0,
                      filterfilename='', modelfile='', plumedfile='', collectivefile=''):
   try:
+    refpdb = md.load_pdb(intopname)
     traj = md.load(infilename, top=intopname)
+    traj.superpose(refpdb)
   except:
     print("Cannot load %s or %s, exiting." % (infilename, intopname))
     exit(0)
