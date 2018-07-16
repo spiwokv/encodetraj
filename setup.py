@@ -7,7 +7,7 @@ def readme():
 
 setup(name='encodetraj',
       version='0.1',
-      description='(Deep learning) autoencoders for molecular trajectory analysis',
+      description='Autoencoders for molecular trajectory analysis',
       long_description=readme(),
       classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -21,7 +21,7 @@ setup(name='encodetraj',
       author='Vojtech Spiwok, ',
       author_email='spiwokv@vscht.cz',
       license='MIT',
-      packages=['encodetrajlib'],
+      packages=['encodetraj'],
       scripts=['bin/encodetraj'],
       install_requires=[
           'numpy',
