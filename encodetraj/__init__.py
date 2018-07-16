@@ -18,14 +18,16 @@ def encodetrajectory(infilename='', intopname='', plotfilename='',
                      lowfilename='', lowfiletype=0, highfilename='', highfiletype=0,
                      filterfilename='', modelfile='', plumedfile='', collectivefile=''):
   try:
+    print("Loading trajectory")
     refpdb = md.load_pdb(intopname)
     traj = md.load(infilename, top=intopname)
+    print("Fitting trajectory")
     traj.superpose(refpdb)
   except:
     print("Cannot load %s or %s, exiting." % (infilename, intopname))
     exit(0)
   else:
-    print("%s succesfully loaded" % traj)
+    print("%s succesfully loaded and fitted" % traj)
   print("")
   # Ploting model scheme
   plotfiletype = 0
