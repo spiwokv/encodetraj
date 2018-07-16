@@ -7,14 +7,14 @@ import datetime as dt
 import sys
 import os
 
-import encodetrajlib
+import encodetraj
 
 def test_100_structures():
   myinfilename = os.path.join(os.path.dirname(__file__), 'traj_fit_small.xtc')
   myintopname = os.path.join(os.path.dirname(__file__), 'reference.pdb')
-  ae, cor = encodetrajlib.encodetrajectory(infilename=myinfilename,
-                                           intopname=myintopname,
-                                           boxx=1, boxy=1, boxz=1, epochs=2000)
+  ae, cor = encodetraj.encodetrajectory(infilename=myinfilename,
+                                        intopname=myintopname,
+                                        boxx=1, boxy=1, boxz=1, epochs=2000)
   assert(cor > 0.9)
 
 if __name__ == '__main__':
