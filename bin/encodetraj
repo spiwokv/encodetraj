@@ -11,7 +11,7 @@ for (name, short) in libnames:
   else:
     globals()[short] = lib
 
-import encodetrajlib
+import encodetraj
 
 # Parsing command line arguments
 parser = arg.ArgumentParser(description='(Deep learning) autoencoders for molecular trajectory analysis, requires numpy, keras and mdtraj')
@@ -177,12 +177,12 @@ plumedfile = args.plumedfile
 if plumedfile != '':
   if plumedfile[-4:] != '.dat':
     plumedfile = plumedfile + '.dat'
-encodetrajlib.encodetrajectory(infilename, intopname, plotfilename,
-                               boxx, boxy, boxz, atestset,
-                               shuffle, layers, layer1, layer2,
-                               encdim, actfun1, actfun2,
-                               optim, loss, epochs, batch,
-                               lowfilename, lowfiletype, highfilename, highfiletype,
-                               filterfilename, modelfile, plumedfile, collectivefile)
+encodetraj.encodetrajectory(infilename, intopname, plotfilename,
+                            boxx, boxy, boxz, atestset,
+                            shuffle, layers, layer1, layer2,
+                            encdim, actfun1, actfun2,
+                            optim, loss, epochs, batch,
+                            lowfilename, lowfiletype, highfilename, highfiletype,
+                            filterfilename, modelfile, plumedfile, collectivefile)
 
 
